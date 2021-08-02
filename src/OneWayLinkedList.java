@@ -1,25 +1,24 @@
-class Node {
+class Node1 {
     int data;
-    Node next;
+    Node1 next;
 
-    public Node(int data) {
+    public Node1(int data) {
         this.data = data;
     }
 
-    void append(int data){
-        Node end = new Node(data);
-        Node n = this;
-
-        while(n.next != null){
+    void append(int data) {
+        Node1 end = new Node1(data);
+        Node1 n = this;
+        while (n.next != null) {
             n = n.next;
         }
         n.next = end;
     }
 
-    void delete(int data){
-        Node n = this;
-        while (n.next != null){
-            if(n.next.data == data){
+    void delete(int data) {
+        Node1 n = this;
+        while (n.next != null) {
+            if (n.next.data == data) {
                 n.next = n.next.next;
             }else{
                 n = n.next;
@@ -27,9 +26,9 @@ class Node {
         }
     }
 
-    void retrieve(){
-        Node n = this;
-        while(n.next != null){
+    void retrieve() {
+        Node1 n = this;
+        while (n.next != null) {
             System.out.print(n.data + " -> ");
             n = n.next;
         }
@@ -40,7 +39,7 @@ class Node {
 public class OneWayLinkedList {
 
     public static void main(String[] args) {
-        Node head = new Node(1);
+        Node1 head = new Node1(1);
         head.append(2);
         head.append(3);
         head.append(4);
