@@ -1,8 +1,8 @@
 import java.util.NoSuchElementException;
 
-class Queue <T>{
+class Queue<T> {
 
-    class Node<T>{
+    class Node<T> {
         private T data;
         private Node<T> next;
 
@@ -10,39 +10,40 @@ class Queue <T>{
             this.data = data;
         }
     }
+
     private Node<T> first;
     private Node<T> last;
 
-    void add (T item){
+    void enqueue(T item) {
         Node<T> t = new Node<>(item);
-        if(last!= null){
+        if (last != null) {
             last.next = t;
         }
         last = t;
-        if(first == null){
+        if (first == null) {
             first = last;
         }
     }
 
-     T remove (){
-        if(first == null) throw new NoSuchElementException();
-         T data = first.data;
-         first = first.next;
+    T dequeue() {
+        if (first == null) throw new NoSuchElementException();
+        T data = first.data;
+        first = first.next;
 
-         if(first == null){
-             last = null;
-         }
-         return data;
-     }
+        if (first == null) {
+            last = null;
+        }
+        return data;
+    }
 
-     public T peek(){
-         if(first == null) throw new NoSuchElementException();
-         return first.data;
-     }
+    public T peek() {
+        if (first == null) throw new NoSuchElementException();
+        return first.data;
+    }
 
-     boolean isEmpty(){
+    boolean isEmpty() {
         return first == null;
-     }
+    }
 }
 
 
@@ -50,17 +51,17 @@ public class QueueTest {
 
     public static void main(String[] args) {
         Queue<Integer> q = new Queue<>();
-        q.add(1);
-        q.add(2);
-        q.add(3);
-        q.add(4);
+        q.enqueue(1);
+        q.enqueue(2);
+        q.enqueue(3);
+        q.enqueue(4);
 
-        Util.println(q.remove());
-        Util.println(q.remove());
+        Util.println(q.dequeue());
+        Util.println(q.dequeue());
         Util.println(q.peek());
-        Util.println(q.remove());
+        Util.println(q.dequeue());
         Util.println(q.isEmpty());
-        Util.println(q.remove());
+        Util.println(q.dequeue());
         Util.println(q.isEmpty());
     }
 

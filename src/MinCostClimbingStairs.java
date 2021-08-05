@@ -2,7 +2,7 @@ public class MinCostClimbingStairs {
 
     public static int minCostClimbingStairs (int [] cost){
 
-        int case1 = 0 , case2 = 0, current = 0;
+        int case1 = 0 , case2 = 0, current;
 
         for(int i = cost.length -1; i >=0; --i){
             current = cost[i] + Math.min(case1 , case2);

@@ -12,7 +12,7 @@ public class ReverseOneWayLinkedList {
     }
 
     static class Reference {
-        public int count = 0;
+         int count = 0;
     }
 
 
@@ -60,9 +60,9 @@ public class ReverseOneWayLinkedList {
 //        list.retrieve();
         int k = 2;
 //        int last = KthToLastToRecursive(list.header , k);
-//        Reference reference = new Reference();
-//        LinkedList.Node lastNode = getKthToLastNodeToRecursive(list.header, k, reference);
-        LinkedList.Node lastNode = getKthToLastNodeUsePointer(list.header, k);
+        Reference reference = new Reference();
+        LinkedList.Node lastNode = getKthToLastNodeToRecursive(list.header, k, reference);
+//        LinkedList.Node lastNode = getKthToLastNodeUsePointer(list.header, k);
         System.out.println(lastNode.data);
     }
 
