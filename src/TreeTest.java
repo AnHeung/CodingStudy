@@ -1,3 +1,5 @@
+//이진검색에서 다음노드 찾기
+
 class Tree2 {
 
     Node root;
@@ -33,33 +35,37 @@ class Tree2 {
 
 
     Node makeBST(int start, int end, Node parent) {
-        if (start > end) return null;
-        int mid = (start + end) / 2;
+        if(start > end) return null;
+        int mid = (start + end) /2;
         Node node = new Node(mid);
-        node.left = makeBST(start, mid - 1, node);
-        node.right = makeBST(mid + 1, end, node);
+        node.left = makeBST(start ,mid-1, node);
+        node.right = makeBST(mid+1, end, node);
         node.parent = parent;
         return node;
     }
 
     void findNext(Node node) {
+        //오른쪽 노드가 없을경우 (해당노드는 더 내려갈때가 없다) 위로 올라가면서 찾는다
         if (node.right == null) {
             Util.println(findAbove(node.parent, node).data + " is " + node.data + " 's next");
         } else {
+            //오른쪽 노드가 있을경우 아래로 내려가면서 찾는다
             Util.println(findBelow(node.right).data + " is " + node.data + " 's next");
         }
     }
 
-    Node findBelow(Node parent) {
-        //돌다가 왼쪽에 자식이 없다 => 해당노드는 다음노드
-        if (parent.left == null) return parent;
-        return findBelow(parent.left);
+    Node findBelow(Node rightNode) {
+        //돌다가 왼쪽에 자식이 없다 => (inorder 의 순서에 입각해서 다음노드는 자신)
+        if (rightNode.left == null) return rightNode;
+        //있으면 왼쪽으로 계속 탐색 (왼쪽 끝까지 가고 나서 부터 왼 root 오)
+        return findBelow(rightNode.left);
     }
 
     Node findAbove(Node parent, Node child) {
         if (parent == null) return null;
-        //부모의 왼쪽 노드가 나랑 같으면 내 부모
+        //부모의 왼쪽 노드가 나랑 같으면 내 부모(inorder 에 따라 왼쪽 root 오른쪽 순서이기 때문에)
         if (parent.left == child) return parent;
+        //못찾으면 한단계 위로
         return findAbove(parent.parent, parent);
     }
 }
@@ -250,6 +256,7 @@ public class TreeTest {
 //        Util.println(tree.isBalanced2(tree.root));
 //        Util.println(tree.isBalanced3(tree.root));
         Tree2 t2 = new Tree2(10);
+//        t2.findNext(t2.root.right.right);
         t2.findNext(t2.root.left.right.right); //3
         t2.findNext(t2.root.left); //1
         t2.findNext(t2.root); //4
