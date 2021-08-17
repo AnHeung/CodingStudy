@@ -31,8 +31,8 @@ class Tree4{
     //root 값 같은거 찾는 함수 ( preorder 로 순회 root -> left -> right )
      boolean subTree(Node t1, Node t2) {
         if(t1 == null) return false;
-        else if(t1.data == t2.data && matchTree(t1,t2)) return true;
-        return subTree(t1.left,t2) || subTree(t1.right , t2);
+        else if(t1.data == t2.data && matchTree(t1,t2)) return true; //root
+        return subTree(t1.left,t2) || subTree(t1.right , t2); // left -> right
     }
      //루트가 같으면 트리비교를 통해 두 구조가 같은지 찾는함수
      boolean matchTree(Node t1, Node t2) {
