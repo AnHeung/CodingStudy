@@ -4,11 +4,9 @@ import java.util.HashMap;
 class Tree6 {
 
     class Node {
-
         int data;
         Node left;
         Node right;
-
         public Node(int data) {
             this.data = data;
         }
@@ -24,7 +22,6 @@ class Tree6 {
         node.right = makeBst(mid + 1, end);
         return node;
     }
-
 
     public Tree6(int size) {
         root = makeBst(0, size - 1);
@@ -117,7 +114,6 @@ class Tree6 {
         return totalPaths;
     }
 
-
     void incrementHashMap(HashMap<Integer, Integer> hashMap, int key, int value) {
         int newCount = hashMap.getOrDefault(key, 0) + value;
         if(newCount == 0) hashMap.remove(key);
@@ -145,5 +141,4 @@ public class TreeSumPathCount {
         Util.println(t.countPathsWithSum2(10));
         Util.println(t.countPathsWithSum3(10));
     }
-
 }
