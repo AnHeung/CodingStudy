@@ -17,13 +17,13 @@ public class UrlEncodeTest {
         // 공백당 글자칸이 2칸씩 더 필요하므로 총 3을 곱함 그리고 인덱스 번호이므로 1을 뺌
         int index = len - spaces + (spaces * 3) - 1; // >> len - (2 * spaces)-1
 
-        for(int p = len -1 ; p >= 0; p--){
-            if(str[p] == ' '){
+        for(int i = len -1 ; i >= 0; i--){
+            if(str[i] == ' '){
                 str[index--] = '0';
                 str[index--] = '2';
                 str[index--] = '%';
             }else{
-                str[index--] = str[p];
+                str[index--] = str[i];
             }
         }
         return new String(str);

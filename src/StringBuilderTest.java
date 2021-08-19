@@ -15,8 +15,7 @@ public class StringBuilderTest {
         int len = str.length();
         ensureCapacity(len);
         for(int i = 0 ; i < str.length(); i++){
-            value[index] = str.charAt(i);
-            index++;
+            value[index++] = str.charAt(i);
         }
         Util.println(" *** " + size + " , " + index);
     }

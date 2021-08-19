@@ -15,6 +15,29 @@ public class StringPalindrome {
         return checkMaxOneOdd(table);
     }
 
+    //알파벳 크기만큼의 인트 배열에 담아 해당 알파벳이 유효하면 값을 추가해 예를 들어 aa bb 는 [2,2,0,0,.....0] 이런식으로 만듬
+    private static int[] buildCharFrequencyTable(String s) {
+        //알파벳 갯수 만큼의 인트배열 생성
+        int[] table = new int[Character.getNumericValue('z') - Character.getNumericValue('a') + 1];
+        for (char c : s.toCharArray()) {
+            int x = getCharNumber(c);
+            if (x != -1) table[x]++;
+        }
+        return table;
+    }
+
+    private static boolean checkMaxOneOdd(int[] table) {
+        boolean foundOdd = false;
+        for (int count : table) {
+            //문자열을 갯수가 홀수면 회문을 만들수 없으므로 false 딱 하나만 있는 경우는 회문의 경우에 포함되므로 true 로 바꾼뒤 그뒤에서도 홀수가 나오면 false
+            if (count % 2 == 1) {
+                if (!foundOdd) foundOdd = true;
+                else return false;
+            }
+        }
+        return true;
+    }
+
     //좀더 효울적으로 개선한 코드
     private static boolean isPermutationOfPalindrome2(String s) {
         int countOdd = 0;
@@ -34,17 +57,6 @@ public class StringPalindrome {
         return countOdd <= 1;
     }
 
-    //알파벳 크기만큼의 인트 배열에 담아 해당 알파벳이 유효하면 값을 추가해 예를 들어 aa bb 는 [2,2,0,0,.....0] 이런식으로 만듬
-    private static int[] buildCharFrequencyTable(String s) {
-        //알파벳 갯수 만큼의 인트배열 생성
-        int[] table = new int[Character.getNumericValue('z') - Character.getNumericValue('a') + 1];
-        for (char c : s.toCharArray()) {
-            int x = getCharNumber(c);
-            if (x != -1) table[x]++;
-        }
-        return table;
-    }
-
     //아스키 숫자값 a~z를 0~26으로 바꿔주는 함수
     private static int getCharNumber(Character c) {
         int a = Character.getNumericValue('a');
@@ -57,15 +69,4 @@ public class StringPalindrome {
         return -1;
     }
 
-    private static boolean checkMaxOneOdd(int[] table) {
-        boolean foundOdd = false;
-        for (int count : table) {
-            //문자열을 갯수가 홀수면 회문을 만들수 없으므로 false 딱 하나만 있는 경우는 회문의 경우에 포함되므로 true로 바꾼뒤 그뒤에서도 홀수가 나오면 false
-            if (count % 2 == 1) {
-                if (!foundOdd) foundOdd = true;
-                else return false;
-            }
-        }
-        return true;
-    }
 }
