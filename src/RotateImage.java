@@ -26,6 +26,7 @@ public class RotateImage {
     bottom = left
     left = temp
      */
+
     //90도 기울기
     private static int[][] rotateImage90Degree(int[][] image) {
         int temp;

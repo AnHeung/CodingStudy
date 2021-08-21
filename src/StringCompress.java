@@ -30,9 +30,9 @@ public class StringCompress {
         int count = 0; //같은 문자열 갯수
         int total = 0;
         int lastIdx = str.length() - 1;
-        for(int i = 0; i < str.length(); i++){
+        for (int i = 0; i < str.length(); i++) {
             count++;
-            if(i  == lastIdx || str.charAt(i) != str.charAt(i+1)){ //맨마지막 문자이거나 다음에 나오는 문자열이 전이랑 다른경우
+            if (i == lastIdx || str.charAt(i) != str.charAt(i + 1)) { //맨마지막 문자이거나 다음에 나오는 문자열이 전이랑 다른경우
                 total += 1 + String.valueOf(count).length();
                 count = 0;
             }
