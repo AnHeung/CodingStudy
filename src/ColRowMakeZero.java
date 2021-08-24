@@ -62,6 +62,6 @@ public class ColRowMakeZero {
             }
             Util.println("");
         }
-        Util.println("");
+        Util.println(""); 
     }
 }
