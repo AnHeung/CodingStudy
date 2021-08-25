@@ -1,14 +1,17 @@
 package test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class Chapter4 {
 
     public static void main(String[] args) {
 //        _4_1();
-        _4_2();
+//        _4_2();
+//        _4_3();
+        Chapter4 c4 = new Chapter4();
+        c4._4_4();
+
     }
 
     static void _4_1() {
@@ -38,9 +41,7 @@ public class Chapter4 {
             if (arr[0] - 1 >= 1) arr[0]--;
         } else if ("D".equals(val)) {
             if (arr[0] + 1 <= length) arr[0]++;
-        } else if ("E".equals(val)) {
-            return false;
-        }
+        } else return !"E".equals(val);
         return true;
     }
 
@@ -132,6 +133,144 @@ public class Chapter4 {
         if (h % 10 == 3 || m / 10 == 3 || m % 10 == 3 || s / 10 == 3 || s % 10 == 3)
             return true;
         return false;
+    }
+
+    static void _4_3() {
+
+        int n = 8;
+
+        Scanner sc = new Scanner(System.in);
+
+        String input = sc.next();
+        int inputInt = Integer.parseInt(input.replaceAll("[^0-9]", ""));
+        int inputStr = Character.getNumericValue(input.replaceAll("[0-9]", "").charAt(0)) - 9;
+
+        int[][] boundaryArr = new int[][]{{1, 2}, {1, -2}, {-1, 2}, {-1, -2}, {2, 1}, {-2, 1}, {2, -1}, {-2, -1}};
+
+        int[] arr = new int[]{inputInt, inputStr};
+
+        System.out.println(arr[0] + " " + arr[1]);
+
+        int count = 0;
+
+        for (int[] boundary : boundaryArr) {
+            int row = arr[0];
+            int col = arr[1];
+
+            int boundaryRow = boundary[0];
+            int boundaryCol = boundary[1];
+
+            if (row + boundaryRow <= n && col + boundaryCol <= n && row + boundaryRow > 0 && col + boundaryCol > 0) {
+                count++;
+            }
+        }
+        System.out.println(count);
+    }
+
+    void _4_3_sol() {
+
+        Scanner sc = new Scanner(System.in);
+
+        // 현재 나이트의 위치 입력받기
+        String inputData = sc.nextLine();
+        int row = inputData.charAt(1) - '0';
+        int column = inputData.charAt(0) - 'a' + 1;
+
+        // 나이트가 이동할 수 있는 8가지 방향 정의
+        int[] dx = {-2, -1, 1, 2, 2, 1, -1, -2};
+        int[] dy = {-1, -2, -2, -1, 1, 2, 2, 1};
+
+        // 8가지 방향에 대하여 각 위치로 이동이 가능한지 확인
+        int result = 0;
+        for (int i = 0; i < 8; i++) {
+            // 이동하고자 하는 위치 확인
+            int nextRow = row + dx[i];
+            int nextColumn = column + dy[i];
+            // 해당 위치로 이동이 가능하다면 카운트 증가
+            if (nextRow >= 1 && nextRow <= 8 && nextColumn >= 1 && nextColumn <= 8) {
+                result += 1;
+            }
+        }
+
+        System.out.println(result);
+    }
+
+    //1단계 북->서  서->남  남->동 동->북
+    //2단계 방문했을시 방향 바꾸기 방문 안하면 한칸 이동
+    //3단계 4방향 다 다녀왔거나 바다면 방향은 유지 뒤로 한칸이동후 1단계 다시
+
+    void _4_4() {
+        Scanner sc = new Scanner(System.in);
+
+        // N, M을 공백을 기준으로 구분하여 입력받기
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+        int x = sc.nextInt();
+        int y = sc.nextInt();
+        int direction = sc.nextInt();
+
+        int[][] arr = new int[n][m];
+        int[][] visit = new int[n][m];
+
+        // 북, 동, 남, 서 방향 정의
+        int[] dx = {-1, 0, 1, 0};
+        int[] dy = {0, 1, 0, 1};
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                arr[i][j] = sc.nextInt();
+            }
+        }
+
+        //방문처리
+        visit[x][y] = 1;
+
+        //1번 방문해서 카운트 추가
+        int cnt = 1;
+        int turnCnt = 0;
+
+        while(true){
+            //일단 왼쪽으로 회전
+            direction = _4_4_TurnLeftDirection(direction);
+
+            int xx = x + dx[direction];
+            int yy = y + dy[direction];
+            // 회전한 이후 정면에 방문 안했고 바다가 아니라면 이동
+            if(arr[xx][yy] == 0 && visit[xx][yy] == 0){
+                visit[xx][yy] =1 ;
+                x = xx;
+                y = yy;
+                cnt++;
+                turnCnt = 0;
+                continue;
+            }else{
+                turnCnt++;
+            }
+
+            //다 돌고 나서 더 갈곳이 있나 확인부분
+            if(turnCnt == 4){
+                //뒤로 한칸 이동
+                xx = x - dx[direction];
+                yy = y - dy[direction];
+                //만약 육지고 방문 x 경우
+                if(arr[xx][yy] == 0){
+                    x = xx;
+                    y = yy;
+                }else {
+                    //탈출
+                    break;
+                }
+                turnCnt = 0;
+            }
+            System.out.println(cnt);
+        }
+
+    }
+
+    int _4_4_TurnLeftDirection(int direction) {
+        direction -= 1;
+        if (direction == -1) return 3;
+        return direction;
     }
 
 }

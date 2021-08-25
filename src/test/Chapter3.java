@@ -58,7 +58,6 @@ public class Chapter3 {
 
         Scanner scan = new Scanner(System.in);
 
-
         int n = scan.nextInt();
         int m = scan.nextInt();
         int k = scan.nextInt();
