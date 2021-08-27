@@ -1,7 +1,9 @@
 package test;
 
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
 
 public class Chapter5 {
 
@@ -68,7 +70,7 @@ public class Chapter5 {
         int row;
         int col;
 
-        public Point(int row, int col) {
+        Point(int row, int col) {
             this.row = row;
             this.col = col;
         }
@@ -93,7 +95,7 @@ public class Chapter5 {
 
         ArrayList<Point> list = new ArrayList<>();
 
-        test(arr, row - 1, col - 1, list);
+        _5_2_findPath(arr, row - 1, col - 1, list);
 
         for (Point p : list) {
             System.out.print(p.row + "" + p.col + " -> ");
@@ -104,12 +106,13 @@ public class Chapter5 {
         return row >= 0 && row <= arr.length - 1 && col >= 0 && col <= arr[row].length - 1;
     }
 
-    static boolean test(int[][] arr, int row, int col, ArrayList<Point> list) {
+    //최단경로를 찾으래서 출구부터 시작해서 북쪽을 우선으로하고 북이 막히면 좌쪽으로 이동하도록 구성
+    static boolean _5_2_findPath(int[][] arr, int row, int col, ArrayList<Point> list) {
         if (!isRange(arr, row, col) || arr[row][col] == 0) return false;
 
-        if (row == 0 && col == 0
-                || test(arr, row - 1, col, list)
-                || test(arr, row, col - 1, list)) {
+        if (row == 0 && col == 0 //최초에는 값을 넣고 시작
+                || _5_2_findPath(arr, row - 1, col, list)
+                || _5_2_findPath(arr, row, col - 1, list)) {
             list.add(new Point(row, col));
             return true;
         }
