@@ -12,7 +12,7 @@ public class Chapter7 {
 //        int result = binarySearch(arr, target, 0, arr.length - 1);
 //        System.out.println(result);
 
-        _7_2();
+        _7_2_sol();
 
     }
 

@@ -8,6 +8,7 @@ public class Chapter8 {
     public static void main(String[] args) {
 //        _8_1();
 //        _8_1_sol();
+//        _8_2_sol();
         _8_4_sol();
     }
 
@@ -141,15 +142,13 @@ public class Chapter8 {
 
         //3개 목표 15  값 2,3,4
 
-        // (n + n-1)
-
         int [] sum = new int[m+1];
         Arrays.fill(sum ,10001);
         sum[0] = 0;
 
         for(int i = 0 ; i < n; i++){
             for(int j = arr[i]; j <= m; j++){ //2,3,4 라고 예를 들면 2부터 시작해서 10001 이 아닐경우 자신의 횟수값을 기록한후 더 작은쪽으로 덮어씌우게된다.
-                if(sum[j - arr[i]] != -1){
+                if(sum[j - arr[i]] != -10001){
                     sum[j] = Math.min(sum[j] , sum[j - arr[i]]+1);
                 }
             }
@@ -176,6 +175,7 @@ public class Chapter8 {
         Arrays.fill(d, 10001);
 
         // 다이나믹 프로그래밍(Dynamic Programming) 진행(보텀업)
+        //최초에 들어오는값이 예를들면 arr[i] = 5라면 5-5 = 0으로 해서 시작시 10001로 초기화 되있는값을 시작이 가능하게 해줌.
         d[0] = 0;
         for (int i = 0; i < n; i++) {
             for (int j = arr[i]; j <= m; j++) {
