@@ -61,7 +61,6 @@ public class Chapter9 {
         }
     }
 
-
     static void upgradeDijkstra(int start) {
         PriorityQueue<Node> pq = new PriorityQueue<>();
         // 시작 노드로 가기 위한 최단 경로는 0으로 설정하여, 큐에 삽입
@@ -191,14 +190,14 @@ public class Chapter9 {
 
         int[][] graph = new int[101][101];
 
-        for (int i = 0; i < 101; i++){
-            Arrays.fill(graph[i] ,INF);
+        for (int i = 0; i < 101; i++) {
+            Arrays.fill(graph[i], INF);
         }
 
         //자기 자신위치의 값 0으로 초기화
-        for(int a = 1; a <= n; a++){
-            for(int b = 0; b <=n; b++){
-                if(a == b) graph[a][b] = 0;
+        for (int a = 1; a <= n; a++) {
+            for (int b = 0; b <= n; b++) {
+                if (a == b) graph[a][b] = 0;
             }
         }
 
@@ -210,9 +209,9 @@ public class Chapter9 {
             graph[b][a] = 1;
         }
 
-        for(int i = 1; i <= n; i++){
-            for(int a = 1; a <= n; a++){
-                for(int b = 0; b <= n; b++){
+        for (int i = 1; i <= n; i++) {
+            for (int a = 1; a <= n; a++) {
+                for (int b = 0; b <= n; b++) {
                     graph[a][b] = Math.min(graph[a][b], graph[a][i] + graph[i][b]);
                 }
             }
@@ -221,12 +220,12 @@ public class Chapter9 {
         int x = sc.nextInt();
         int k = sc.nextInt();
 
-        System.out.println(graph[1][k] + graph[k][x] > INF ? -1 :graph[1][k] + graph[k][x]);
+        System.out.println(graph[1][k] + graph[k][x] > INF ? -1 : graph[1][k] + graph[k][x]);
     }
 
-    static void _9_4(){
+    static void _9_4() {
 
-        Scanner sc  = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
         //도시수
         int n = sc.nextInt();
         //통로수
@@ -234,24 +233,24 @@ public class Chapter9 {
         //시작 도시 C
         int start = sc.nextInt();
 
-        int[] d = new int[n+1];
+        int[] d = new int[n + 1];
 
-        boolean[] visited = new boolean[n+1];
+        boolean[] visited = new boolean[n + 1];
 
         ArrayList<ArrayList<Node>> graph = new ArrayList<>();
 
-        for(int i = 0; i <= n; i++){
+        for (int i = 0; i <= n; i++) {
             graph.add(new ArrayList<>());
         }
 
-        for(int i = 0; i < m; i++){
+        for (int i = 0; i < m; i++) {
             int a = sc.nextInt();
             int b = sc.nextInt();
             int c = sc.nextInt();
             graph.get(a).add(new Node(b, c));
         }
 
-        Arrays.fill(d,  INF);
+        Arrays.fill(d, INF);
 
         d[start] = 0;
         visited[start] = true;
@@ -261,32 +260,32 @@ public class Chapter9 {
         }
 
         //자신 제외 하고 n-1 번 수행
-        for(int i = 0 ; i < n-1; i++){
+        for (int i = 0; i < n - 1; i++) {
             //가장짧은 노드
-            int now = getSmallestNode(n , d, visited);
+            int now = getSmallestNode(n, d, visited);
             visited[now] = true;
 
-            for(int j = 0 ; j < graph.get(now).size(); j++){
+            for (int j = 0; j < graph.get(now).size(); j++) {
 
                 int cost = d[now] + graph.get(now).get(j).getDistance();
 
-                if(cost < d[graph.get(now).get(j).getIndex()]){
+                if (cost < d[graph.get(now).get(j).getIndex()]) {
                     d[graph.get(now).get(j).getIndex()] = cost;
                 }
             }
         }
 
-        int cityCount = 0 ;
+        int cityCount = 0;
         int time = 0;
 
-        for(int i = 1; i <= n; i++){
-            if(d[i] != INF){
+        for (int i = 1; i <= n; i++) {
+            if (d[i] != INF) {
                 cityCount++;
-                time = Math.max(time , d[i]);
+                time = Math.max(time, d[i]);
             }
         }
-                                     //자기 자신 빼기
-        System.out.println("도시 " + (cityCount-1) + " 시간 " + time);
+        //자기 자신 빼기
+        System.out.println("도시 " + (cityCount - 1) + " 시간 " + time);
     }
 
     static int getSmallestNode(int n, int[] d, boolean[] visited) {
