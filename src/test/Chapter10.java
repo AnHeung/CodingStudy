@@ -6,11 +6,11 @@ public class Chapter10 {
 
 
     public static void main(String[] args) {
-        _10_7();
+        _10_5();
     }
 
     //계속 부모를 찾아 내려가서 부모를 찾으면 해당값 리턴
-    public static int findParent(int[] parent, int x) {
+    static int findParent(int[] parent, int x) {
         if (parent[x] == x) return x;
         return findParent(parent, parent[x]);
     }
@@ -20,13 +20,13 @@ public class Chapter10 {
     O(VM) 만큼 시간복잡도가 생기지만 경로압축기법을 이용해 재귀 호출후 부모 테이블값을 갱신함으로써 더 효율적으로
     검색할수 있다.
     */
-    public static int findParent2(int[] parent, int x) {
+    static int findParent2(int[] parent, int x) {
         if (parent[x] != x) parent[x] = findParent2(parent, parent[x]);
         return parent[x];
     }
 
     // 두 원소가 속한 집합 합치기
-    public static void unionParent(int[] parent, int a, int b) {
+    static void unionParent(int[] parent, int a, int b) {
         //각각 부모를 추출해 부모가 큰쪽이 작은쪽을 바라보게 작업
         //부모가 작은쪽이 부모가 된다.
         a = findParent(parent, a);
@@ -95,6 +95,7 @@ public class Chapter10 {
         else System.out.println("사이클 발생 안함");
     }
 
+    //크루스칼 알고리즘
     void _10_3() {
         Scanner sc = new Scanner(System.in);
 
@@ -204,10 +205,9 @@ public class Chapter10 {
         sc.nextLine();
 
         for (int i = 0; i < m; i++) {
-            String lines = sc.nextLine();
-            int type = Integer.parseInt(lines.split(" ")[0]);
-            int a = Integer.parseInt(lines.split(" ")[1]);
-            int b = Integer.parseInt(lines.split(" ")[2]);
+            int type = sc.nextInt();
+            int a = sc.nextInt();
+            int b = sc.nextInt();
 
             //합연산
             if (type == 0) {
@@ -330,7 +330,7 @@ public class Chapter10 {
                 result[graph.get(now).get(i)] = Math.max(result[graph.get(now).get(i)], result[now] + times[graph.get(now).get(i)]);
                 indegree[graph.get(now).get(i)] -= 1;
 
-                if(indegree[graph.get(now).get(i)]== 0) queue.offer(graph.get(now).get(i));
+                if (indegree[graph.get(now).get(i)] == 0) queue.offer(graph.get(now).get(i));
             }
         }
         for (int i = 1; i <= n; i++) {
