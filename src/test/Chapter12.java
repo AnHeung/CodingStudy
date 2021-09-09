@@ -1,14 +1,11 @@
 package test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Scanner;
+import java.util.*;
 
 public class Chapter12 {
 
     public static void main(String[] args) {
-        _12_3();
+        _12_4();
     }
 
     static void _12_1() {
@@ -67,9 +64,7 @@ public class Chapter12 {
         Scanner sc = new Scanner(System.in);
         String lines = sc.nextLine();
 
-        char[] input = lines.toCharArray();
         int[] result = new int[128];
-
 
         int length = 1;
 
@@ -83,7 +78,7 @@ public class Chapter12 {
                 int endStartIdx = i + length;
                 int endIdx = i + (2 * length);
                 if (endIdx > lines.length()) {
-                    count +=(lines.length() - i+1);
+                    count += (lines.length() - i);
                     break;
                 }
 
@@ -100,12 +95,70 @@ public class Chapter12 {
                     }
                 }
                 prev = end;
-
-                System.out.println(count);
             }
             result[length] = count;
             length++;
         }
+
+        int min = 0;
+        int num = 0;
+
+        for (int i = 0; i < result.length; i++) {
+            if (result[i] != 0) {
+                if (result[i] < min || min == 0) {
+                    min = result[i];
+                    num = i;
+                }
+            }
+        }
+        System.out.println("최대값  : " + min + " 자르는 문자열 단위 : " + num);
+    }
+
+    static void _12_4() {
+        Scanner sc = new Scanner(System.in);
+        int m = sc.nextInt();
+        int n = sc.nextInt();
+        int[][] keyArr = new int[m][m];
+        int[][] lockArr = new int[n][n];
+
+        sc.nextLine();
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < m; j++) {
+                keyArr[i][j] = sc.nextInt();
+            }
+        }
+
+//        sc.nextLine();
+//
+//        for (int i = 0; i < n; i++) {
+//            for (int j = 0; j < n; j++) {
+//                lockArr[i][j] = sc.nextInt();
+//            }
+//        }
+
+        /*
+        00 01 02
+        11 12 13
+        21 22 23
+         */
+
+        keyArr = rotate(keyArr);
+
         System.out.println();
+    }
+
+    static int[][] rotate(int[][] arr) {
+        int n = arr.length;
+        int m = arr[0].length;
+        int[][] rotate = new int[m][n];
+
+        for (int i = 0; i < rotate.length; i++) {
+            for (int j = 0; j < rotate[i].length; j++) {
+                rotate[i][j] = arr[n-1-j][i];
+            }
+        }
+
+        return rotate;
     }
 }

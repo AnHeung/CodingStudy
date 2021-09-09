@@ -28,7 +28,7 @@ public class RotateImage {
      */
 
     //90도 기울기
-    private static int[][] rotateImage90Degree(int[][] image) {
+    public static int[][] rotateImage90Degree(int[][] image) {
         int temp;
         for (int s1 = 0, e1 = image.length - 1; s1 < e1; s1++, e1--) {
             for (int s2 = s1, e2 = e1; s2 < e1; s2++, e2--) {
