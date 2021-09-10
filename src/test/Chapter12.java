@@ -5,7 +5,7 @@ import java.util.*;
 public class Chapter12 {
 
     public static void main(String[] args) {
-        _12_4();
+        _12_5();
     }
 
     static void _12_1() {
@@ -146,6 +146,61 @@ public class Chapter12 {
         keyArr = rotate(keyArr);
 
         System.out.println();
+    }
+
+    static void _12_5(){
+        Scanner sc = new Scanner(System.in);
+
+        int n = sc.nextInt();
+        int k = sc.nextInt();
+
+        int[][] map = new int[n+1][n+1];
+
+        sc.nextLine();
+
+        for(int i = 0; i < k; i++){
+            int a = sc.nextInt();
+            int b = sc.nextInt();
+            map[a][b] = 1;
+        }
+        int l = sc.nextInt();
+
+        sc.nextLine();
+
+        for(int i = 0 ; i < l; i++){
+            String lines = sc.nextLine();
+            int position = Integer.parseInt(lines.split(" ")[0]);
+            String direction = lines.split(" ")[1];
+           findMap(map, position, direction);
+        }
+    }
+
+    static void findMap(int [][] map , int time , String direction){
+        int row = 1;
+        int col = 1;
+        int count =0 ;
+        int size = 1;
+        int start = 1;
+        int end = 1;
+
+        String currentDirection = "R";
+
+
+        if("R".equals(currentDirection)){
+            col+=1;
+        }else if("L".equals(currentDirection)){
+            col-=1;
+        }else if("N".equals(currentDirection)){
+            row+=1;
+        }else if("S".equals(currentDirection)){
+            row-=1;
+        }
+
+        if(time == count){
+
+        }
+
+
     }
 
     static int[][] rotate(int[][] arr) {
