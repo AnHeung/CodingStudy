@@ -5,7 +5,7 @@ import java.util.*;
 public class Chapter12 {
 
     public static void main(String[] args) {
-        _12_5();
+        _12_4();
     }
 
     static void _12_1() {
@@ -155,6 +155,12 @@ public class Chapter12 {
             key = _12_4_rotate(key); //열쇠 회전
             for(int x = 0 ; x< n*2; x++){
                 for(int y =0; y < n*2; y++){
+
+                    /*
+                    3*3 배열이 y값이 증가함에 따라 한칸씩 이동하게 된다(동쪽으로)
+                    그러다 y값이 다 끝나고 나면 x 값이 증가함에 따라 한줄내려가서(남쪽) 다시 동쪽으로 이동하면서 3*3 배열값을 만들며
+                    비교한다. 그리고 다 비교하고 나면 다시 90도 돌려서 축을 바꾼다음 다시 위에 과정을 반복한다.
+                     */
                     for(int i = 0; i < m; i++){
                         for(int j = 0; j < m; j++){
                             newLock[x+i][y+j] += key[i][j];
