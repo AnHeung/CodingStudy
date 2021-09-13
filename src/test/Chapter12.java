@@ -129,91 +129,198 @@ public class Chapter12 {
             }
         }
 
-//        sc.nextLine();
-//
-//        for (int i = 0; i < n; i++) {
-//            for (int j = 0; j < n; j++) {
-//                lockArr[i][j] = sc.nextInt();
-//            }
-//        }
-
-        /*
-        00 01 02
-        11 12 13
-        21 22 23
-         */
-
-        keyArr = rotate(keyArr);
-
-        System.out.println();
-    }
-
-    static void _12_5(){
-        Scanner sc = new Scanner(System.in);
-
-        int n = sc.nextInt();
-        int k = sc.nextInt();
-
-        int[][] map = new int[n+1][n+1];
-
-        sc.nextLine();
-
-        for(int i = 0; i < k; i++){
-            int a = sc.nextInt();
-            int b = sc.nextInt();
-            map[a][b] = 1;
-        }
-        int l = sc.nextInt();
-
-        sc.nextLine();
-
-        for(int i = 0 ; i < l; i++){
-            String lines = sc.nextLine();
-            int position = Integer.parseInt(lines.split(" ")[0]);
-            String direction = lines.split(" ")[1];
-           findMap(map, position, direction);
-        }
-    }
-
-    static void findMap(int [][] map , int time , String direction){
-        int row = 1;
-        int col = 1;
-        int count =0 ;
-        int size = 1;
-        int start = 1;
-        int end = 1;
-
-        String currentDirection = "R";
-
-
-        if("R".equals(currentDirection)){
-            col+=1;
-        }else if("L".equals(currentDirection)){
-            col-=1;
-        }else if("N".equals(currentDirection)){
-            row+=1;
-        }else if("S".equals(currentDirection)){
-            row-=1;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < m; j++) {
+                lockArr[i][j] = sc.nextInt();
+            }
         }
 
-        if(time == count){
-
-        }
-
+        _12_4_solution(keyArr,lockArr);
 
     }
 
-    static int[][] rotate(int[][] arr) {
+    private static boolean _12_4_solution (int[][] key , int [][] lock){
+        int n = lock.length;
+        int m = key.length;
+
+        int[][] newLock = new int[n*3][n*3];
+
+        for(int i = 0 ; i < n; i++){
+            for(int j = 0; j <n; j++){
+                newLock[i+n][j+n] = lock[i][j];
+            }
+        }
+
+        for(int rotation = 0 ; rotation < 4; rotation++){
+            key = _12_4_rotate(key); //열쇠 회전
+            for(int x = 0 ; x< n*2; x++){
+                for(int y =0; y < n*2; y++){
+                    for(int i = 0; i < m; i++){
+                        for(int j = 0; j < m; j++){
+                            newLock[x+i][y+j] += key[i][j];
+                        }
+                    }
+                    if(_12_4_checkLock(newLock)) return true;
+                    for(int i = 0; i < m; i++){
+                        for(int j = 0 ; j < m; j++){
+                            newLock[x+i][y+j] -= key[i][j];
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean _12_4_checkLock(int[][] newLock) {
+        int lockLength = newLock.length / 3;
+        for (int i = lockLength; i < lockLength * 2; i++) {
+            for (int j = lockLength; j < lockLength * 2; j++) {
+                if (newLock[i][j] != 1) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    static int[][] _12_4_rotate(int[][] arr) {
         int n = arr.length;
         int m = arr[0].length;
         int[][] rotate = new int[m][n];
 
         for (int i = 0; i < rotate.length; i++) {
             for (int j = 0; j < rotate[i].length; j++) {
-                rotate[i][j] = arr[n-1-j][i];
+                rotate[i][j] = arr[n - 1 - j][i];
             }
         }
 
         return rotate;
+    }
+
+    static void _12_5() {
+        Scanner sc = new Scanner(System.in);
+
+        int n = sc.nextInt();
+        int k = sc.nextInt();
+
+        //방향 회전 정보
+        ArrayList<Node2> info = new ArrayList<>();
+
+        int[][] map = new int[n + 1][n + 1];
+        sc.nextLine();
+
+        for (int i = 0; i < k; i++) {
+            int a = sc.nextInt();
+            int b = sc.nextInt();
+            map[a][b] = 1;
+        }
+        int l = sc.nextInt();
+
+        for (int i = 0; i < l; i++) {
+            int x = sc.nextInt();
+            char c = sc.next().charAt(0);
+            info.add(new Node2(x, c));
+        }
+
+        System.out.println(simulate(info, map, n , l));
+    }
+
+    private static int simulate(ArrayList<Node2> info, int[][] map , int n , int l) {
+        //동남서북 (0,1) 동 , (1,0) 남 , (0,-1) 서 , (-1,0) 북
+        int[] dx = {0, 1, 0, -1};
+        int[] dy = {1, 0, -1, 0};
+
+        int x = 1, y = 1; //뱀시작위치
+        map[x][y] = 2; //뱀이존재하는 위치는 2로 지정
+        int direction = 0; // 0은 동쪽
+        int time = 0;
+        int index =0; // 다음 회전정보 (info index 값)
+        Queue<Position> q = new LinkedList<>();
+        q.offer(new Position(x,y));
+
+        while(!q.isEmpty()){
+            int nx = x + dx[direction];
+            int ny = y + dy[direction];
+            //뱀이 범위안에 있고 범이 몸통이 없는 위치
+            if(1 <= nx && nx <= n && 1<=ny && ny <= n && map[nx][ny] != 2){
+                //사과가 없을때 이동후 꼬리 제거
+                if(map[nx][ny] ==0){
+                    map[nx][ny] = 2;
+                    q.offer(new Position(nx, ny));
+                    Position prev = q.poll();
+                    map[prev.getX()][prev.getY()] = 0;
+                }
+                //사과 존재시 이동후 꼬리 유지
+                if(map[nx][ny] == 1){
+                    map[nx][ny] = 2;
+                    q.offer(new Position(nx,ny));
+                }
+            }else{
+                time++;
+                break;
+            }
+
+            x = nx;
+            y = ny;
+            time++;
+            //회전할 시간일떄
+            if(index < l && time == info.get(index).getTime()){
+                direction = turn(direction , info.get(index).getDirection());
+                index++;
+            }
+        }
+        return time;
+    }
+
+    /*
+      L 이라는건 90도 반시계회전 동->북->서->남 순으로 돌고 dx ={0,1,0,-1} dy = {1,0,-1,0} 이므로 해당 direction 값 index 로
+      접근 하면 현위치에서 동쪽(0,1) 을 더하고 남쪽 (1,0)을 더하면 됨. 단 direction 이 0 값 (즉 동쪽일때는 다시 뒤로 돌아가서
+      3번 인덱스인 북으로 가게 됨  동->북
+      R 이라는건 90도 회전 즉 동->남->서->북 순으로 돌고 위와 같은 조건으로 direction 값에 맞는 index 를 찾아가면됨.
+      시계방향으로 90도 돌때 %4 를 하는 이유는 값이 3 일떄 다시 처음으로 가면 %4 를 해서 0으로 초기화(동쪽) 위함
+      북->동
+     */
+    static int turn(int direction, char c) {
+        if (c == 'L') direction = (direction == 0) ? 3 : direction - 1;
+        else direction = (direction + 1) % 4;
+        return direction;
+    }
+}
+
+//뱀의 위치값 저장할 클래스
+class Position {
+    private int x;
+    private int y;
+
+    public Position(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+}
+
+class Node2 {
+    private int time;
+    private char direction;
+
+    public Node2(int time, char direction) {
+        this.time = time;
+        this.direction = direction;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public char getDirection() {
+        return direction;
     }
 }
