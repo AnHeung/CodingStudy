@@ -5,7 +5,7 @@ import java.util.*;
 public class Chapter12 {
 
     public static void main(String[] args) {
-        _12_4();
+        _12_6();
     }
 
     static void _12_1() {
@@ -135,41 +135,41 @@ public class Chapter12 {
             }
         }
 
-        _12_4_solution(keyArr,lockArr);
+        _12_4_solution(keyArr, lockArr);
 
     }
 
-    private static boolean _12_4_solution (int[][] key , int [][] lock){
+    private static boolean _12_4_solution(int[][] key, int[][] lock) {
         int n = lock.length;
         int m = key.length;
 
-        int[][] newLock = new int[n*3][n*3];
+        int[][] newLock = new int[n * 3][n * 3];
 
-        for(int i = 0 ; i < n; i++){
-            for(int j = 0; j <n; j++){
-                newLock[i+n][j+n] = lock[i][j];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                newLock[i + n][j + n] = lock[i][j];
             }
         }
 
-        for(int rotation = 0 ; rotation < 4; rotation++){
+        for (int rotation = 0; rotation < 4; rotation++) {
             key = _12_4_rotate(key); //열쇠 회전
-            for(int x = 0 ; x< n*2; x++){
-                for(int y =0; y < n*2; y++){
+            for (int x = 0; x < n * 2; x++) {
+                for (int y = 0; y < n * 2; y++) {
 
                     /*
                     3*3 배열이 y값이 증가함에 따라 한칸씩 이동하게 된다(동쪽으로)
                     그러다 y값이 다 끝나고 나면 x 값이 증가함에 따라 한줄내려가서(남쪽) 다시 동쪽으로 이동하면서 3*3 배열값을 만들며
                     비교한다. 그리고 다 비교하고 나면 다시 90도 돌려서 축을 바꾼다음 다시 위에 과정을 반복한다.
                      */
-                    for(int i = 0; i < m; i++){
-                        for(int j = 0; j < m; j++){
-                            newLock[x+i][y+j] += key[i][j];
+                    for (int i = 0; i < m; i++) {
+                        for (int j = 0; j < m; j++) {
+                            newLock[x + i][y + j] += key[i][j];
                         }
                     }
-                    if(_12_4_checkLock(newLock)) return true;
-                    for(int i = 0; i < m; i++){
-                        for(int j = 0 ; j < m; j++){
-                            newLock[x+i][y+j] -= key[i][j];
+                    if (_12_4_checkLock(newLock)) return true;
+                    for (int i = 0; i < m; i++) {
+                        for (int j = 0; j < m; j++) {
+                            newLock[x + i][y + j] -= key[i][j];
                         }
                     }
                 }
@@ -229,10 +229,10 @@ public class Chapter12 {
             info.add(new Node2(x, c));
         }
 
-        System.out.println(simulate(info, map, n , l));
+        System.out.println(simulate(info, map, n, l));
     }
 
-    private static int simulate(ArrayList<Node2> info, int[][] map , int n , int l) {
+    private static int simulate(ArrayList<Node2> info, int[][] map, int n, int l) {
         //동남서북 (0,1) 동 , (1,0) 남 , (0,-1) 서 , (-1,0) 북
         int[] dx = {0, 1, 0, -1};
         int[] dy = {1, 0, -1, 0};
@@ -241,28 +241,28 @@ public class Chapter12 {
         map[x][y] = 2; //뱀이존재하는 위치는 2로 지정
         int direction = 0; // 0은 동쪽
         int time = 0;
-        int index =0; // 다음 회전정보 (info index 값)
+        int index = 0; // 다음 회전정보 (info index 값)
         Queue<Position> q = new LinkedList<>();
-        q.offer(new Position(x,y));
+        q.offer(new Position(x, y));
 
-        while(!q.isEmpty()){
+        while (!q.isEmpty()) {
             int nx = x + dx[direction];
             int ny = y + dy[direction];
             //뱀이 범위안에 있고 범이 몸통이 없는 위치
-            if(1 <= nx && nx <= n && 1<=ny && ny <= n && map[nx][ny] != 2){
+            if (1 <= nx && nx <= n && 1 <= ny && ny <= n && map[nx][ny] != 2) {
                 //사과가 없을때 이동후 꼬리 제거
-                if(map[nx][ny] ==0){
+                if (map[nx][ny] == 0) {
                     map[nx][ny] = 2;
                     q.offer(new Position(nx, ny));
                     Position prev = q.poll();
                     map[prev.getX()][prev.getY()] = 0;
                 }
                 //사과 존재시 이동후 꼬리 유지
-                if(map[nx][ny] == 1){
+                if (map[nx][ny] == 1) {
                     map[nx][ny] = 2;
-                    q.offer(new Position(nx,ny));
+                    q.offer(new Position(nx, ny));
                 }
-            }else{
+            } else {
                 time++;
                 break;
             }
@@ -271,8 +271,8 @@ public class Chapter12 {
             y = ny;
             time++;
             //회전할 시간일떄
-            if(index < l && time == info.get(index).getTime()){
-                direction = turn(direction , info.get(index).getDirection());
+            if (index < l && time == info.get(index).getTime()) {
+                direction = turn(direction, info.get(index).getDirection());
                 index++;
             }
         }
@@ -292,7 +292,154 @@ public class Chapter12 {
         else direction = (direction + 1) % 4;
         return direction;
     }
+
+    static void _12_6() {
+        Scanner sc = new Scanner(System.in);
+
+        int n = sc.nextInt();
+        int m = 10;
+        ArrayList<BuildItem> buildList = new ArrayList<>();
+
+        for (int i = 0; i < m; i++) {
+            int x = sc.nextInt();
+            int y = sc.nextInt();
+            int type = sc.nextInt();
+            boolean isBuild = sc.nextInt() == 1;
+
+            if (!isBuild) { // 삭제하는 경우
+                // 일단 삭제를 해 본 뒤에
+                int index = 0;
+                for (int j = 0; j < buildList.size(); j++) {
+                    if (x == buildList.get(j).getX() && y == buildList.get(j).getY() && type == buildList.get(j).getType()) {
+                        index = j;
+                    }
+                }
+                BuildItem erased = buildList.get(index);
+                buildList.remove(index);
+                if (!isPossible(buildList)) { // 가능한 구조물인지 확인
+                    buildList.add(erased); // 가능한 구조물이 아니라면 다시 설치
+                }
+            } else {
+                // 일단 설치를 해 본 뒤에
+                BuildItem inserted = new BuildItem(x, y, type);
+                buildList.add(inserted);
+                if (!isPossible(buildList)) { // 가능한 구조물인지 확인
+                    buildList.remove(inserted); // 가능한 구조물이 아니라면 다시 제거
+                }
+            }
+        }
+
+        Collections.sort(buildList);
+        System.out.println();
+
+    }
+
+    static boolean isPossible(ArrayList<BuildItem> buildList) {
+
+         /*
+         - 기둥은 바닥에 있거나 보의 한쪽끝 위에 있거나 다른 기둥위에 있어야됨.
+         - 보는 한쪽 끝부분이 기둥위에 있거나 양쪽 끝부분이 다른 보와 동시에 연결되어야 함.
+         - 구조물은 겹치게 설치하는 경우가 없고 없는 구조물을 삭제할수도 없음
+         - 벽을 벗어나도 안됨
+         - 잘못된 구조물 설치가 되면 해당 동작은 무시됨.
+
+            0 0 0 1
+            2 0 0 1
+            4 0 0 1
+            0 1 1 1
+            1 1 1 1
+            2 1 1 1
+            3 1 1 1
+            2 0 0 0
+            1 1 1 0
+            2 2 0 1
+         */
+
+        for (int i = 0; i < buildList.size(); i++) {
+            int x = buildList.get(i).getX();
+            int y = buildList.get(i).getY();
+            int type = buildList.get(i).getType();
+            if (type == 0) { // 설치된 것이 '기둥'인 경우
+                boolean check = false;
+                // '바닥 위'라면 정상
+                if (y == 0) check = true;
+                // '보의 한 쪽 끝 부분 위' 혹은 '다른 기둥 위'라면 정상
+                for (int j = 0; j < buildList.size(); j++) {
+                    if (x - 1 == buildList.get(j).getX() && y == buildList.get(j).getY() && 1 == buildList.get(j).getType()) { //둘의 관계가
+                        check = true;
+                    }
+                    if (x == buildList.get(j).getX() && y == buildList.get(j).getY() && 1 == buildList.get(j).getType()) {
+                        check = true;
+                    }
+                    if (x == buildList.get(j).getX() && y - 1 == buildList.get(j).getY() && 0 == buildList.get(j).getType()) {
+                        check = true;
+                    }
+                    if (!check) return false;
+                }// 아니라면 거짓(False) 반환
+            } else if (type == 1) { // 설치된 것이 '보'인 경우
+                 boolean check = false;
+                boolean left = false;
+                boolean right = false;
+                // '한쪽 끝부분이 기둥 위' 혹은 '양쪽 끝부분이 다른 보와 동시에 연결'이라면 정상
+                for (int j = 0; j < buildList.size(); j++) {
+                    if (x == buildList.get(j).getX() && y - 1 == buildList.get(j).getY() && 0 == buildList.get(j).getType()) {
+                        check = true;
+                    }
+                    if (x + 1 == buildList.get(j).getX() && y - 1 == buildList.get(j).getY() && 0 == buildList.get(j).getType()) {
+                        check = true;
+                    }
+                    if (x - 1 == buildList.get(j).getX() && y == buildList.get(j).getY() && 1 == buildList.get(j).getType()) {
+                        left = true;
+                    }
+                    if (x + 1 == buildList.get(j).getX() && y == buildList.get(j).getY() && 1 == buildList.get(j).getType()) {
+                        right = true;
+                    }
+                }
+                if (left && right) check = true;
+                if (!check) return false; // 아니라면 거짓(False) 반환
+            }
+        }
+        return true;
+    }
 }
+
+class BuildItem implements Comparable<BuildItem> {
+
+    private int x;
+    private int y;
+    private int type;
+
+    public BuildItem(int x, int y, int type) {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    // 정렬 기준 설정 (x, y, type 순서대로 오름차순)
+    @Override
+    public int compareTo(BuildItem other) {
+        if (this.x == other.x && this.y == other.y) {
+            return Integer.compare(this.type, other.type);
+        }
+        if (this.x == other.x) {
+            return Integer.compare(this.y, other.y);
+        }
+        return Integer.compare(this.x, other.x);
+    }
+}
+
 
 //뱀의 위치값 저장할 클래스
 class Position {
