@@ -5,7 +5,7 @@ import java.util.*;
 public class Chapter12 {
 
     public static void main(String[] args) {
-        _12_6();
+        _12_7();
     }
 
     static void _12_1() {
@@ -377,7 +377,7 @@ public class Chapter12 {
                     if (!check) return false;
                 }// 아니라면 거짓(False) 반환
             } else if (type == 1) { // 설치된 것이 '보'인 경우
-                 boolean check = false;
+                boolean check = false;
                 boolean left = false;
                 boolean right = false;
                 // '한쪽 끝부분이 기둥 위' 혹은 '양쪽 끝부분이 다른 보와 동시에 연결'이라면 정상
@@ -400,6 +400,173 @@ public class Chapter12 {
             }
         }
         return true;
+    }
+
+    static void _12_7() {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+        ArrayList<Position> chickenList = new ArrayList<>();
+        ArrayList<Position> houseList = new ArrayList<>();
+        ArrayList<Distance> distances = new ArrayList<>();
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                int x = sc.nextInt();
+                if (x == 1) houseList.add(new Position(i, j));
+                if (x == 2) chickenList.add(new Position(i, j));
+            }
+        }
+
+        for (int i = 0; i < chickenList.size(); i++) {
+
+            int x1 = chickenList.get(i).getX();
+            int y1 = chickenList.get(i).getY();
+            int count = 0;
+
+            for (int j = 0; j < houseList.size(); j++) {
+                int x2 = houseList.get(j).getX();
+                int y2 = houseList.get(j).getY();
+                count += Math.abs(x1 - x2) + Math.abs(y1 - y2);
+            }
+            distances.add(new Distance(x1, y1, count));
+        }
+
+        Collections.sort(distances);
+
+        for (int i = 0; i < distances.size(); i++) {
+            if (i >= m) {
+                int x = distances.get(i).x;
+                int y = distances.get(i).y;
+                int index = 0;
+                for (int j = 0; j < chickenList.size(); j++) {
+                    if (x == chickenList.get(j).getX() && y == chickenList.get(j).getY()) {
+                        index = j;
+                    }
+                }
+                chickenList.remove(index);
+
+            }
+        }
+
+        int total = 0;
+
+        for (int i = 0; i < houseList.size(); i++) {
+            int min = (int)1e9;
+            int x = houseList.get(i).getX();
+            int y = houseList.get(i).getY();
+            for (int j = 0; j < chickenList.size(); j++) {
+                int x2 = chickenList.get(j).getX();
+                int y2 = chickenList.get(j).getY();
+                min = Math.min(min, Math.abs(x - x2) + Math.abs(y - y2));
+            }
+            total += min;
+        }
+
+        System.out.println(total);
+    }
+
+    static void _12_7_sol() {
+        Scanner sc = new Scanner(System.in);
+
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+        int[][] arr = new int[50][50];
+        ArrayList<Position> house = new ArrayList<>();
+        ArrayList<Position> chicken = new ArrayList<>();
+
+
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < n; c++) {
+                arr[r][c] = sc.nextInt();
+                if (arr[r][c] == 1) house.add(new Position(r, c)); // 일반 집
+                else if (arr[r][c] == 2) chicken.add(new Position(r, c)); // 치킨집
+            }
+        }
+
+        // 모든 치킨 집 중에서 m개의 치킨 집을 뽑는 조합 계산
+        Combination comb = new Combination(chicken.size(), m);
+        comb.combination(chicken, 0, 0, 0);
+        ArrayList<ArrayList<Position>> chickenList = comb.getResult();
+
+        // 치킨 거리의 합의 최소를 찾아 출력
+        int result = (int) 1e9;
+        for (int i = 0; i < chickenList.size(); i++) {
+            result = Math.min(result, _12_7_sol_getSum(house, chickenList.get(i)));
+        }
+        System.out.println(result);
+    }
+
+    public static int _12_7_sol_getSum(ArrayList<Position> house, ArrayList<Position> candidates) {
+        int result = 0;
+        // 모든 집에 대하여
+        for (int i = 0; i < house.size(); i++) {
+            int hx = house.get(i).getX();
+            int hy = house.get(i).getY();
+            // 가장 가까운 치킨 집을 찾기
+            int temp = (int) 1e9;
+            for (int j = 0; j < candidates.size(); j++) {
+                int cx = candidates.get(j).getX();
+                int cy = candidates.get(j).getY();
+                temp = Math.min(temp, Math.abs(hx - cx) + Math.abs(hy - cy));
+            }
+            // 가장 가까운 치킨 집까지의 거리를 더하기
+            result += temp;
+        }
+        // 치킨 거리의 합 반환
+        return result;
+    }
+}
+
+class Combination {
+    private int n;
+    private int r;
+    private int[] now;
+    ArrayList<ArrayList<Position>> result;
+
+    public Combination(int n, int r) {
+        this.n = n;
+        this.r = r;
+        this.now = new int[r];
+        this.result = new ArrayList<>();
+    }
+
+    public ArrayList<ArrayList<Position>> getResult() {
+        return result;
+    }
+
+    void combination(ArrayList<Position> arr, int depth, int index, int target) {
+        if (depth == r) {
+            ArrayList<Position> temp = new ArrayList<>();
+            for (int i = 0; i < now.length; i++) {
+                temp.add(arr.get(now[i]));
+            }
+            result.add(temp);
+            return;
+        }
+        if (target == n) return;
+        now[index] = target;
+        combination(arr, depth + 1, index + 1, target + 1);
+        combination(arr, depth, index, target + 1);
+    }
+}
+
+class Distance implements Comparable<Distance> {
+
+    int x;
+    int y;
+    int distance;
+
+    public Distance(int x, int y, int distance) {
+        this.x = x;
+        this.y = y;
+        this.distance = distance;
+    }
+
+    @Override
+    public int compareTo(Distance o) {
+        if (this.distance < o.distance) return -1;
+        return 1;
     }
 }
 
