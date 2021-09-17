@@ -5,7 +5,7 @@ import java.util.*;
 public class Chapter12 {
 
     public static void main(String[] args) {
-        _12_7();
+        _12_8();
     }
 
     static void _12_1() {
@@ -515,6 +515,50 @@ public class Chapter12 {
         }
         // 치킨 거리의 합 반환
         return result;
+    }
+
+    static void _12_8(){
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] map = new int[n];
+        int[] weak = new int[4];
+        int[] dist = new int[4];
+        ArrayList<ArrayList<Integer>> list = new ArrayList<>();
+
+        for(int i = 0 ; i< n; i++){
+            map[i] = i;
+            list.add(new ArrayList<>());
+        }
+
+        for(int i = 0 ; i < weak.length; i++){
+            weak[i] = sc.nextInt();
+        }
+
+        for(int i = 0 ; i < dist.length; i++){
+            dist[i] = sc.nextInt();
+        }
+
+        for(int i = 0 ; i < n; i++){
+            for(int j = 0 ; j < dist.length; j++){
+
+                int max = 0;
+                int count = 0;
+
+                for(int k = 0 ; k < weak.length; k++){
+
+                    if(map[i] + dist[j] >= weak[k] || (map[i] - dist[j] > 0 && map[i]-dist[j] >= weak[k] )){
+                        count++;
+                    } else if(map[i] - dist[j] < 0){
+                        int remain = n + map[i] - dist[j];
+                        if(remain <= weak[k]){
+                            count++;
+                        }
+                    }
+                }
+                list.get(i).add(count);
+            }
+        }
+        System.out.println();
     }
 }
 
