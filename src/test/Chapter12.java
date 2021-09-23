@@ -521,8 +521,8 @@ public class Chapter12 {
         Scanner sc = new Scanner(System.in);
         int n = sc.nextInt();
         int[] map = new int[n];
-        int[] weak = new int[4];
-        int[] dist = new int[4];
+        int[] weak = new int[3];
+        int[] dist = new int[2];
         ArrayList<ArrayList<Integer>> list = new ArrayList<>();
 
         for(int i = 0 ; i< n; i++){
@@ -539,24 +539,28 @@ public class Chapter12 {
         }
 
         for(int i = 0 ; i < n; i++){
+
+            int max = 0;
+
             for(int j = 0 ; j < dist.length; j++){
 
-                int max = 0;
                 int count = 0;
 
                 for(int k = 0 ; k < weak.length; k++){
 
-                    if(map[i] + dist[j] >= weak[k] || (map[i] - dist[j] > 0 && map[i]-dist[j] >= weak[k] )){
-                        count++;
-                    } else if(map[i] - dist[j] < 0){
-                        int remain = n + map[i] - dist[j];
-                        if(remain <= weak[k]){
+                    if(map[i] + dist[j] < n ){
+                        if(map[i] + dist[j] >=weak[k]) count++;
+                    } else if((map[i] + dist[j] > n)){
+                        int remain = map[i]+ dist[j] - n;
+                        if(remain >= weak[k]){
                             count++;
                         }
                     }
                 }
-                list.get(i).add(count);
+                max = Math.max(count , max);
             }
+            list.get(i).add(max);
+
         }
         System.out.println();
     }
