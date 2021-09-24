@@ -7,10 +7,16 @@ public class Chapter13 {
     static int[] dx = {0, 1, 0, -1};
     static int[] dy = {1, 0, -1, 0};
     static int n, m, result = 0;
+    static int add;
+    static int sub;
+    static int mul;
+    static int div;
+    static int min = (int) 1e9;
+    static int max = -(int) 1e9;
 
 
     public static void main(String[] args) {
-        _13_4();
+        _13_5();
     }
 
 
@@ -246,6 +252,89 @@ public class Chapter13 {
             else builder.append(")");
         }
         return builder.toString();
+    }
+
+    static void _13_5() {
+
+        Scanner sc = new Scanner(System.in);
+        n = sc.nextInt();
+        int[] arr = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            arr[i] = sc.nextInt();
+        }
+
+        add = sc.nextInt();
+        sub = sc.nextInt();
+        mul = sc.nextInt();
+        div = sc.nextInt();
+        //1,2,3,4
+        //+ + - *
+
+//        int sum = arr[0];
+//
+//        for(int i = 0 ; i < n; i++){
+//
+//            if(i+1 < n){
+//                if(add > 0){
+//                     sum += arr[i+1];
+//                     add--;
+//                }
+//
+//                if(sub > 0){
+//                    sum -= arr[i+1];
+//                    sub--;
+//                }
+//
+//                if(mul > 0){
+//                    sum *= arr[i+1];
+//                    mul--;
+//                }
+//
+//                if(div > 0){
+//                    sum /= arr[i+1];
+//                    div--;
+//                }
+//            }
+//        }
+
+        _13_5_dfs(1, arr[0], arr);
+
+        System.out.println(min);
+        System.out.println(max);
+
+    }
+
+
+
+    static void _13_5_dfs(int i, int now, int[] arr) {
+
+        if (i == n) {
+            min = Math.min(min, now);
+            max = Math.max(max, now);
+        } else {
+            // 각 연산자에 대하여 재귀적으로 수행
+            if (add > 0) {
+                add -= 1;
+                _13_5_dfs(i + 1, now + arr[i] , arr);
+                add += 1;
+            }
+            if (sub > 0) {
+                sub -= 1;
+                _13_5_dfs(i + 1, now - arr[i] , arr);
+                sub += 1;
+            }
+            if (mul > 0) {
+                mul -= 1;
+                _13_5_dfs(i + 1, now * arr[i] , arr);
+                mul += 1;
+            }
+            if (div > 0) {
+                div -= 1;
+                _13_5_dfs(i + 1, now / arr[i] , arr);
+                div += 1;
+            }
+        }
     }
 }
 
