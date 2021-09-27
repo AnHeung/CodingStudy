@@ -16,7 +16,7 @@ public class Chapter13 {
 
 
     public static void main(String[] args) {
-        _13_5();
+        _13_6();
     }
 
 
@@ -306,7 +306,6 @@ public class Chapter13 {
     }
 
 
-
     static void _13_5_dfs(int i, int now, int[] arr) {
 
         if (i == n) {
@@ -316,26 +315,114 @@ public class Chapter13 {
             // 각 연산자에 대하여 재귀적으로 수행
             if (add > 0) {
                 add -= 1;
-                _13_5_dfs(i + 1, now + arr[i] , arr);
+                _13_5_dfs(i + 1, now + arr[i], arr);
                 add += 1;
             }
             if (sub > 0) {
                 sub -= 1;
-                _13_5_dfs(i + 1, now - arr[i] , arr);
+                _13_5_dfs(i + 1, now - arr[i], arr);
                 sub += 1;
             }
             if (mul > 0) {
                 mul -= 1;
-                _13_5_dfs(i + 1, now * arr[i] , arr);
+                _13_5_dfs(i + 1, now * arr[i], arr);
                 mul += 1;
             }
             if (div > 0) {
                 div -= 1;
-                _13_5_dfs(i + 1, now / arr[i] , arr);
+                _13_5_dfs(i + 1, now / arr[i], arr);
                 div += 1;
             }
         }
     }
+
+    static void _13_6() {
+
+        Scanner sc = new Scanner(System.in);
+        n = sc.nextInt();
+        int[][] map = new int[n][n];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                String next = sc.next();
+                map[i][j] = setType(next);
+            }
+        }
+
+        System.out.println(_13_6_dfs(map, 0, 0, 0));
+
+
+    }
+
+    static String _13_6_dfs(int[][] map, int x, int y, int count) {
+
+        if (count == 3) {
+
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (map[i][j] == 2) {
+                        return _13_6_checkStudent(i, j, map);
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (map[i][j] == 0) {
+                    map[i][j] = 3;
+                    count++;
+                    if("YES".equals(_13_6_dfs(map, x, y, count))){
+                        return "YES";
+                    };
+                    map[i][j] = 0;
+                    count--;
+                }
+            }
+        }
+        return "NO";
+    }
+
+    static String _13_6_checkStudent(int x, int y, int[][] map) {
+
+        for (int i = 0; i < 4; i++) {
+
+            for (int j = 0; j < n; j++) {
+
+                int nx = x;
+                int ny = y;
+
+                if (i == 0) ny += j;
+                if (i == 1) nx += j;
+                if (i == 2) ny -= j;
+                if (i == 3) nx -= j;
+
+
+                if (nx >= 0  && nx < n && ny >= 0 && ny < n) {
+                    if(map[nx][ny] == 3) break;
+                    if(map[nx][ny] == 1)
+                        return "NO";
+                }
+            }
+        }
+        return "YES";
+    }
+
+    static int setType(String type) {
+
+        return switch (type) {
+            case "S" -> 1;
+            case "T" -> 2;
+            default -> 0;
+        };
+    }
+}
+
+class School {
+    int x;
+    int y;
+    int type;
+
 }
 
 class Virus implements Comparable<Virus> {
