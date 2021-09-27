@@ -573,10 +573,10 @@ class Combination {
     ArrayList<ArrayList<Position>> result;
 
     public Combination(int n, int r) {
-        this.n = n;
-        this.r = r;
-        this.now = new int[r];
-        this.result = new ArrayList<>();
+        this.n = n; //리스트 길이
+        this.r = r; //제한값
+        this.now = new int[r]; //리스트의 인덱스값
+        this.result = new ArrayList<>(); //최종 조합된 모든 경우의 리스트
     }
 
     public ArrayList<ArrayList<Position>> getResult() {

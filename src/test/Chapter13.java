@@ -6,7 +6,8 @@ public class Chapter13 {
 
     static int[] dx = {0, 1, 0, -1};
     static int[] dy = {1, 0, -1, 0};
-    static int n, m, result = 0;
+    static int n, m, l, r, result = 0;
+    int[] d;
     static int add;
     static int sub;
     static int mul;
@@ -14,9 +15,13 @@ public class Chapter13 {
     static int min = (int) 1e9;
     static int max = -(int) 1e9;
 
+    public static char[][] board = new char[6][6]; // 복도 정보 (N x N)
+    public static ArrayList<Position> teachers = new ArrayList<>(); // 모든 선생님 위치 정보
+    public static ArrayList<Position> spaces = new ArrayList<>(); // 모든 빈 공간 위치 정보
+
 
     public static void main(String[] args) {
-        _13_6();
+        _13_7();
     }
 
 
@@ -348,16 +353,12 @@ public class Chapter13 {
                 map[i][j] = setType(next);
             }
         }
-
         System.out.println(_13_6_dfs(map, 0, 0, 0));
-
-
     }
 
     static String _13_6_dfs(int[][] map, int x, int y, int count) {
 
         if (count == 3) {
-
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
                     if (map[i][j] == 2) {
@@ -366,15 +367,15 @@ public class Chapter13 {
                 }
             }
         }
-
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (map[i][j] == 0) {
                     map[i][j] = 3;
                     count++;
-                    if("YES".equals(_13_6_dfs(map, x, y, count))){
+                    if ("YES".equals(_13_6_dfs(map, x, y, count))) {
                         return "YES";
-                    };
+                    }
+                    ;
                     map[i][j] = 0;
                     count--;
                 }
@@ -397,10 +398,9 @@ public class Chapter13 {
                 if (i == 2) ny -= j;
                 if (i == 3) nx -= j;
 
-
-                if (nx >= 0  && nx < n && ny >= 0 && ny < n) {
-                    if(map[nx][ny] == 3) break;
-                    if(map[nx][ny] == 1)
+                if (nx >= 0 && nx < n && ny >= 0 && ny < n) {
+                    if (map[nx][ny] == 3) break;
+                    if (map[nx][ny] == 1)
                         return "NO";
                 }
             }
@@ -416,13 +416,205 @@ public class Chapter13 {
             default -> 0;
         };
     }
-}
 
-class School {
-    int x;
-    int y;
-    int type;
+    static void _13_6_sol() {
 
+        Scanner sc = new Scanner(System.in);
+
+        n = sc.nextInt();
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                board[i][j] = sc.next().charAt(0);
+                // 선생님이 존재하는 위치 저장
+                if (board[i][j] == 'T') {
+                    teachers.add(new Position(i, j));
+                }
+                // 장애물을 설치할 수 있는 (빈 공간) 위치 저장
+                if (board[i][j] == 'X') {
+                    spaces.add(new Position(i, j));
+                }
+            }
+        }
+
+        // 빈 공간에서 3개를 뽑는 모든 조합을 확인
+        Combination comb = new Combination(spaces.size(), 3);
+        comb.combination(spaces, 0, 0, 0);
+        ArrayList<ArrayList<Position>> spaceList = comb.getResult();
+
+        // 학생이 한 명도 감지되지 않도록 설치할 수 있는지의 여부
+        boolean found = false;
+        for (int i = 0; i < spaceList.size(); i++) {
+            // 장애물들을 설치해보기
+            for (int j = 0; j < spaceList.get(i).size(); j++) {
+                int x = spaceList.get(i).get(j).getX();
+                int y = spaceList.get(i).get(j).getY();
+                board[x][y] = 'O';
+            }
+            // 학생이 한 명도 감지되지 않는 경우
+            if (!_13_6_process()) {
+                // 원하는 경우를 발견한 것임
+                found = true;
+                break;
+            }
+            // 설치된 장애물을 다시 없애기
+            for (int j = 0; j < spaceList.get(i).size(); j++) {
+                int x = spaceList.get(i).get(j).getX();
+                int y = spaceList.get(i).get(j).getY();
+                board[x][y] = 'X';
+            }
+        }
+
+        if (found) System.out.println("YES");
+        else System.out.println("NO");
+    }
+
+    // 장애물 설치 이후에, 한 명이라도 학생이 감지되는지 검사
+    public static boolean _13_6_process() {
+        // 모든 선생의 위치를 하나씩 확인
+        for (int i = 0; i < teachers.size(); i++) {
+            int x = teachers.get(i).getX();
+            int y = teachers.get(i).getY();
+            // 4가지 방향으로 학생을 감지할 수 있는지 확인
+            for (int j = 0; j < 4; j++) {
+                if (_13_6_watch(x, y, j)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // 특정 방향으로 감시를 진행 (학생 발견: true, 학생 미발견: false)
+    public static boolean _13_6_watch(int x, int y, int direction) {
+        // 왼쪽 방향으로 감시
+        if (direction == 0) {
+            while (y >= 0) {
+                if (board[x][y] == 'S') { // 학생이 있는 경우
+                    return true;
+                }
+                if (board[x][y] == 'O') { // 장애물이 있는 경우
+                    return false;
+                }
+                y -= 1;
+            }
+        }
+        // 오른쪽 방향으로 감시
+        if (direction == 1) {
+            while (y < n) {
+                if (board[x][y] == 'S') { // 학생이 있는 경우
+                    return true;
+                }
+                if (board[x][y] == 'O') { // 장애물이 있는 경우
+                    return false;
+                }
+                y += 1;
+            }
+        }
+        // 위쪽 방향으로 감시
+        if (direction == 2) {
+            while (x >= 0) {
+                if (board[x][y] == 'S') { // 학생이 있는 경우
+                    return true;
+                }
+                if (board[x][y] == 'O') { // 장애물이 있는 경우
+                    return false;
+                }
+                x -= 1;
+            }
+        }
+        // 아래쪽 방향으로 감시
+        if (direction == 3) {
+            while (x < n) {
+                if (board[x][y] == 'S') { // 학생이 있는 경우
+                    return true;
+                }
+                if (board[x][y] == 'O') { // 장애물이 있는 경우
+                    return false;
+                }
+                x += 1;
+            }
+        }
+        return false;
+    }
+
+    static void _13_7() {
+        Scanner sc = new Scanner(System.in);
+        n = sc.nextInt();
+        l = sc.nextInt(); //몇명 이상
+        r = sc.nextInt(); // 몇명 이하
+
+        int[][] map = new int[n][n];
+        int[][] unions = new int[n][n];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                map[i][j] = sc.nextInt();
+            }
+        }
+        int index = 0;
+
+        while (index < n*n) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    unions[i][j] = -1;
+                }
+            }
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (unions[i][j] == -1) { // 해당 나라가 아직 처리되지 않았다면
+                        _13_7_process(map, unions, i, j, index);
+                        index += 1;
+                    }
+                }
+            }
+            result++;
+        }
+        System.out.println(result);
+    }
+
+    static void _13_7_process(int[][] map, int[][] unions, int x, int y, int idx) {
+
+        // (x, y)의 위치와 연결된 나라(연합) 정보를 담는 리스트
+        ArrayList<Position> united = new ArrayList<>();
+        united.add(new Position(x, y));
+        // 너비 우선 탐색 (BFS)을 위한 큐 라이브러리 사용
+        Queue<Position> q = new LinkedList<>();
+        q.offer(new Position(x, y));
+        unions[x][y] = idx; // 현재 연합의 번호 할당
+        int summary = map[x][y]; // 현재 연합의 전체 인구 수
+        int count = 1; // 현재 연합의 국가 수
+        // 큐가 빌 때까지 반복(BFS)
+        while (!q.isEmpty()) {
+            Position pos = q.poll();
+            x = pos.getX();
+            y = pos.getY();
+            // 현재 위치에서 4가지 방향을 확인하며
+            for (int i = 0; i < 4; i++) {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+                // 바로 옆에 있는 나라를 확인하여
+                if (0 <= nx && nx < n && 0 <= ny && ny < n && unions[nx][ny] == -1) {
+                    // 옆에 있는 나라와 인구 차이가 L명 이상, R명 이하라면
+                    int gap = Math.abs(map[nx][ny] - map[x][y]);
+                    if (l <= gap && gap <= r) {
+                        q.offer(new Position(nx, ny));
+                        // 연합에 추가하기
+                        unions[nx][ny] = idx;
+                        summary += map[nx][ny];
+                        count += 1;
+                        united.add(new Position(nx, ny));
+                    }
+                }
+            }
+        }
+        // 연합 국가끼리 인구를 분배
+        for (int i = 0; i < united.size(); i++) {
+            x = united.get(i).getX();
+            y = united.get(i).getY();
+            map[x][y] = summary / count;
+        }
+    }
 }
 
 class Virus implements Comparable<Virus> {
