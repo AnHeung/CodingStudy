@@ -375,7 +375,6 @@ public class Chapter13 {
                     if ("YES".equals(_13_6_dfs(map, x, y, count))) {
                         return "YES";
                     }
-                    ;
                     map[i][j] = 0;
                     count--;
                 }
@@ -409,12 +408,14 @@ public class Chapter13 {
     }
 
     static int setType(String type) {
-
-        return switch (type) {
-            case "S" -> 1;
-            case "T" -> 2;
-            default -> 0;
-        };
+        switch (type) {
+            case "S":
+                return 1;
+            case "T":
+                return 2;
+            default:
+                return 0;
+        }
     }
 
     static void _13_6_sol() {
@@ -552,9 +553,11 @@ public class Chapter13 {
                 map[i][j] = sc.nextInt();
             }
         }
+        //각 나라 인덱스
         int index = 0;
 
-        while (index < n*n) {
+        while (true) {
+            //-1 로 초기화 시켜 모두 방문안했다고 가정함
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
                     unions[i][j] = -1;
@@ -568,6 +571,7 @@ public class Chapter13 {
                     }
                 }
             }
+            if (index == n * n) break;
             result++;
         }
         System.out.println(result);
@@ -614,6 +618,55 @@ public class Chapter13 {
             y = united.get(i).getY();
             map[x][y] = summary / count;
         }
+    }
+
+    static void _13_8() {
+
+        Scanner sc = new Scanner(System.in);
+        n = sc.nextInt();
+        int[][] map = new int[n][n];
+        int[][] temp = new int[n][n];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                map[i][j] = sc.nextInt();
+            }
+        }
+        System.out.println(_13_8_solution(map));
+    }
+
+    static int _13_8_solution(int[][] map) {
+        int answer = 0;
+        int x = 0;
+        int y = 0;
+
+        Queue<Position> queue = new LinkedList<>();
+        int direction = 0;
+        queue.offer(new Position(x,y));
+        map[x][y] = 2;
+        map[x][y+1] = 2;
+
+        if(!queue.isEmpty()){
+
+            int nx = x+ dx[direction];
+            int ny = x+ dx[direction];
+
+            if(nx >= 0 && nx < n && ny >= 0 && ny < n && map[nx][ny] != 1){
+                queue.offer(new Position(nx,ny));
+                map[nx][ny] = 2;
+                Position position = queue.poll();
+                map[position.getX()][position.getY()] = 0;
+            }
+
+        }
+
+        return answer;
+    }
+
+    int _13_8_TurnLeftDirection(int direction) {
+        direction -= 1;
+        if (direction == -1) return 3;
+        return direction;
     }
 }
 
