@@ -350,7 +350,7 @@ public class Chapter13 {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 String next = sc.next();
-                map[i][j] = setType(next);
+                map[i][j] = _13_6_setType(next);
             }
         }
         System.out.println(_13_6_dfs(map, 0, 0, 0));
@@ -407,7 +407,7 @@ public class Chapter13 {
         return "YES";
     }
 
-    static int setType(String type) {
+    static int _13_6_setType(String type) {
         switch (type) {
             case "S":
                 return 1;

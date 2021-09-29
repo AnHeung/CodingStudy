@@ -11,7 +11,7 @@ public class Chapter15 {
     public static int[] arr;
 
     public static void main(String[] args) {
-        _15_3();
+        _15_1();
     }
 
     static void _15_1() {
