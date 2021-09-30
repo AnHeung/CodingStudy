@@ -32,8 +32,6 @@ public class Chapter9 {
     }
 
     public static void main(String[] args) {
-//        _9_1();
-//        _9_2();
         _9_4();
     }
 
