@@ -1,7 +1,6 @@
 package test;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Scanner;
 
 public class Chapter16 {
@@ -14,7 +13,7 @@ public class Chapter16 {
     static int[] dy = {1, 1, 1};
 
     public static void main(String[] args) {
-        _16_5_sol();
+        _16_1();
     }
 
     static void _16_1() {
