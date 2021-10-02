@@ -8,12 +8,13 @@ public class Chapter17 {
     public static int[] arr;
     public static Scanner sc = new Scanner(System.in);
     public static int[][] map;
+    public static int[][] d;
     public static int INF = (int) 1e9;
     static int[] dx = {0, 1, 0, -1};
     static int[] dy = {1, 0, -1, 0};
 
     public static void main(String[] args) {
-        _17_3();
+        _17_4();
     }
 
     static void _17_1() {
@@ -90,7 +91,7 @@ public class Chapter17 {
     }
 
     //실패 .. 오답
-    static void _17_2_sol() {
+    static void _17_2_miss() {
         n = sc.nextInt();
         m = sc.nextInt();
 
@@ -99,7 +100,6 @@ public class Chapter17 {
         for (int i = 0; i <= n; i++) {
             list.add(new ArrayList<>());
         }
-
 
         for (int i = 0; i < m; i++) {
             int a = sc.nextInt();
@@ -134,7 +134,6 @@ public class Chapter17 {
     static void _17_3() {
         n = sc.nextInt();
 
-
         for (int t = 0; t < n; t++) {
             m = sc.nextInt();
             map = new int[m][m];
@@ -167,31 +166,137 @@ public class Chapter17 {
                 visited[nx][ny] = true;
                 _17_3_dfs(nx, ny, sum + map[nx][ny], visited);
                 visited[nx][ny] = false;
-            } else {
-                return;
             }
         }
     }
-}
 
-class Ranking {
-    int idx;
-    boolean isBigger = false;
+    static void _17_3_sol() {
 
-    public Ranking(int idx, boolean isBigger) {
-        this.idx = idx;
-        this.isBigger = isBigger;
+        n = sc.nextInt();
+
+        for (int t = 0; t < n; t++) {
+
+            m = sc.nextInt();
+            map = new int[m][m];
+            d = new int[m][m];
+
+            for (int i = 0; i < m; i++) {
+                Arrays.fill(d[i], INF);
+            }
+
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < m; j++) {
+                    map[i][j] = sc.nextInt();
+                }
+            }
+            result = INF;
+            int x = 0 , y = 0;
+
+            PriorityQueue<Node3> pq = new PriorityQueue<>();
+            pq.offer(new Node3(x, y, map[x][y]));
+            d[x][y] = map[x][y];
+
+            while (!pq.isEmpty()) {
+
+                Node3 node = pq.poll();
+                int dist = node.distance; //현좌표의 거리값
+                x = node.x;
+                y = node.y;
+
+                for (int i = 0; i < 4; i++) {
+
+                    int nx = x + dx[i];
+                    int ny = y + dy[i];
+
+                    if (d[x][y] < dist) continue;
+
+                    if (nx >= 0 && nx < m && ny >= 0 && ny < m) {
+                        int cost = map[nx][ny] + dist; //다음좌표의 거리값 + 현좌표의 까지의 누적 거리값
+                        if (cost < d[nx][ny]) { //다음 좌표의 최소 거리값 좌표
+                            d[nx][ny] = cost;
+                            pq.offer(new Node3(nx, ny, cost));
+                        }
+                    }
+                }
+            }
+            System.out.println(d[m-1][m-1]);
+        }
+    }
+
+    static void _17_4(){
+        n = sc.nextInt();
+        m = sc.nextInt();
+        int[] d = new int[100];
+        map = new int[100][100];
+
+        ArrayList<ArrayList<Node>> list = new ArrayList<>();
+
+        for(int i = 0; i <= n; i++){
+            d[i] = INF;
+        }
+
+        for(int i = 0; i <= n ; i++){
+            list.add(new ArrayList<>());
+        }
+
+        for(int i = 0 ; i < m; i++){
+            int a = sc.nextInt();
+            int b = sc.nextInt();
+            list.get(a).add(new Node(b,1));
+            list.get(b).add(new Node(a,1));
+        }
+
+        PriorityQueue<Node> pq = new PriorityQueue<>();
+        pq.offer(new Node(1,0));
+        d[1] = 0;
+
+        while(!pq.isEmpty()){
+
+            Node node = pq.poll();
+            int now = node.getIndex();
+            int dist = node.getDistance();
+
+            if(d[now] < dist) continue;
+
+            for(int i = 0 ; i < list.get(now).size(); i++){
+                int cost = d[now] + list.get(now).get(i).getDistance();
+
+                if(cost < d[list.get(now).get(i).getIndex()]){
+                    d[list.get(now).get(i).getIndex()] = cost;
+                    pq.offer(new Node(list.get(now).get(i).getIndex() , cost));
+                }
+            }
+        }
+        int idx = 1;
+        int count = 0;
+        int distance = 1;
+
+        for(int i  = 2; i <= n; i++){
+            if(d[idx] >= d[i]){
+                count++;
+            }else{
+                idx = i;
+                count = 1;
+            }
+            distance = d[i];
+        }
+        System.out.println(idx + " " + distance + " " + count);
     }
 }
 
-class Test {
+class Node3 implements Comparable<Node3>{
     int x;
     int y;
-    int i;
+    int distance;
 
-    public Test(int x, int y, int i) {
+    public Node3(int x, int y, int distance) {
         this.x = x;
         this.y = y;
-        this.i = i;
+        this.distance = distance;
+    }
+
+    @Override
+    public int compareTo(Node3 o) {
+        return distance- o.distance;
     }
 }
