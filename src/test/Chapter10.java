@@ -367,7 +367,6 @@ class Edge implements Comparable<Edge> {
 
     @Override
     public int compareTo(Edge other) {
-        if (this.distance < other.distance) return -1;
-        return 1;
+        return this.distance - other.distance;
     }
 }
