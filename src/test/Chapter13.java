@@ -554,7 +554,6 @@ public class Chapter13 {
             }
         }
         //각 나라 인덱스
-        int index = 0;
 
         while (true) {
             //-1 로 초기화 시켜 모두 방문안했다고 가정함
@@ -563,6 +562,8 @@ public class Chapter13 {
                     unions[i][j] = -1;
                 }
             }
+            int index = 0;
+
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
                     if (unions[i][j] == -1) { // 해당 나라가 아직 처리되지 않았다면
