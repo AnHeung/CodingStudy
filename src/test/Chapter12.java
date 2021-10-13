@@ -5,7 +5,7 @@ import java.util.*;
 public class Chapter12 {
 
     public static void main(String[] args) {
-        _12_8();
+        _12_5();
     }
 
     static void _12_1() {
