@@ -5,6 +5,7 @@ import java.util.*;
 public class Chapter12Re {
 
     public static int n, m, l, result, max, min;
+    static int N;
     static int plus = 0, sub = 0, mul = 0, div = 0;
     public static int[] arr;
     public static Scanner sc = new Scanner(System.in);
@@ -20,7 +21,7 @@ public class Chapter12Re {
     static int[] dy = {1, 0, -1, 0};
 
     public static void main(String[] args) {
-        _12_5();
+        _12_6();
     }
 
     static void _12_1() {
@@ -150,7 +151,7 @@ public class Chapter12Re {
                 for (int y = 0; y < n * 2; y++) {
 
                     /*
-                    이부분 식을 싸는데 고민을 했다
+                    이부분 식을 짜는데 고민을 했다
                     key 배열값을 lock 배열값에 같은 걸로 위치만 바꾸면서 복사해야하는데
                     키값만큼 이중배열을 한번 더써서 
                     lockArr[i+x][j+y] += keyArr[i][j] 해당식을 짤생각을 못했다 ㅠ
@@ -219,8 +220,8 @@ public class Chapter12Re {
         map = new int[n][n];
 
         for (int i = 0; i < m; i++) {
-            int a = sc.nextInt()-1;
-            int b = sc.nextInt()-1;
+            int a = sc.nextInt() - 1;
+            int b = sc.nextInt() - 1;
             map[a][b] = 1;
         }
 
@@ -274,34 +275,222 @@ public class Chapter12Re {
             count++;
 
             if (index < l && directionList.get(index).time == count) {
-                direction = changeDirection(directionList.get(index).direction, direction);
+                direction = _12_5_changeDirection(directionList.get(index).direction, direction);
                 index++;
             }
         }
     }
 
-    static int changeDirection(String directionStr, int direction) {
+    static int _12_5_changeDirection(String directionStr, int direction) {
         if (directionStr.equals("D")) {
-            return changeRightDirection(direction);
+            return _12_5_changeRightDirection(direction);
         } else {
-            return changeLeftDirection(direction);
+            return _12_5_changeLeftDirection(direction);
         }
     }
 
-    static int turn(int direction, String c) {
-        if (c.equals("L")) direction = (direction == 0) ? 3 : direction - 1;
-        else direction = (direction + 1) % 4;
-        return direction;
-    }
-
-    static int changeRightDirection(int direction) {
+    static int _12_5_changeRightDirection(int direction) {
         if (direction == 3) return 1;
         return direction + 1;
     }
 
-    static int changeLeftDirection(int direction) {
+    static int _12_5_changeLeftDirection(int direction) {
         if (direction == 0) return 3;
         return direction - 1;
+    }
+
+    /*
+       설치하는거까진 했으나 삭제하는쪽에서 애먹었다.
+       그냥 삭제를 해버린다음에 현재 배열을 돌려 테스트 해보고 다 통과하면 문제없는거고
+       실패하면 문제 있는거라 삭제를 취소하면 되는데 그 생각을 못했던거 같다.
+     */
+    static void _12_6() {
+
+        n = sc.nextInt();
+        m = sc.nextInt();
+        map = new int[n+1][n+1];
+        ArrayList<BuildFrame> buildFrameList = new ArrayList<>();
+        ArrayList<BuildItem2> buildItemList = new ArrayList<>();
+
+        for (int i = 0; i < n+1; i++) {
+            Arrays.fill(map[i], -1);
+        }
+
+        for (int i = 0; i < m; i++) {
+            int x = sc.nextInt();
+            int y = sc.nextInt();
+            int buildType = sc.nextInt();
+            int isRemove = sc.nextInt();
+            buildFrameList.add(new BuildFrame(x, y, buildType, isRemove));
+        }
+
+        for (int i = 0; i < buildFrameList.size(); i++) {
+
+            BuildFrame buildFrame = buildFrameList.get(i);
+            int x = buildFrame.x;
+            int y = buildFrame.y;
+            int buildType = buildFrame.buildType;
+            int isRemove = buildFrame.isRemove;
+            BuildItem2 buildItem = new BuildItem2(buildFrame.x, buildFrame.y, buildFrame.buildType);
+
+            if (isRemove == 1) { //설치
+                if (_12_6_Available(buildFrame)) {
+                    buildItemList.add(buildItem);
+                }
+            } else {
+
+                int idx = -1;
+                for (int j = 0; j < buildItemList.size(); j++) {
+                    if (buildItemList.get(j).x == x && buildItemList.get(j).y == y && buildItemList.get(j).buildType == buildType) {
+                        idx = j;
+                        break;
+                    }
+                }
+                buildItemList.remove(idx);
+                map[x][y] = -1;
+                if (!_12_6_isRemovable(buildItemList)) {
+                    buildItemList.add(idx ,buildItem);
+                    map[x][y] = buildType;
+                }
+            }
+
+        }
+        Collections.sort(buildItemList);
+
+        for (int i = 0; i < buildItemList.size(); i++) {
+            System.out.println(buildItemList.get(i).toString());
+        }
+    }
+
+    static boolean _12_6_Available(BuildFrame buildFrame) {
+
+        int x = buildFrame.x;
+        int y = buildFrame.y;
+        int type = buildFrame.buildType;
+
+        //기둥
+        if (type == 0) {
+
+            if (y == 0) {
+                map[x][y] = 0;
+                return true;
+            }
+
+            if (map[x][y - 1] == 0 || map[x - 1][y] == 1 || map[x + 1][y] == 1) {
+                map[x][y] = 0;
+                return true;
+            }
+
+        } else { //보
+            if (y == 0) {
+                return false;
+            }
+
+            if (map[x][y - 1] == 0 || map[x + 1][y - 1] == 0 || (map[x + 1][y] == 1 && map[x - 1][y] == 1)) {
+                map[x][y] = 1;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static boolean _12_6_isRemovable(ArrayList<BuildItem2> list) {
+
+        boolean check = false;
+
+        for (BuildItem2 item : list) {
+
+            int x = item.x;
+            int y = item.y;
+            int type = item.buildType;
+
+            //기둥
+            if (type == 0) {
+
+                if (y == 0) {
+                    check = true;
+                } else if (map[x][y - 1] == 0 || map[x - 1][y] == 1 || map[x + 1][y] == 1) {
+                    check = true;
+                }else{
+                    return false;
+                }
+            } else { //보
+                if (y == 0) {
+                    return false;
+                }
+
+                if (map[x][y - 1] == 0 || map[x + 1][y - 1] == 0 || (map[x + 1][y] == 1 && map[x - 1][y] == 1)) {
+                    check = true;
+                }else{
+                    return false;
+                }
+            }
+        }
+        return check;
+    }
+
+    static void _12_7() {
+
+        n = sc.nextInt();
+        m = sc.nextInt();
+
+        ArrayList<Position> chickenList = new ArrayList<>();
+        ArrayList<Position> houseList = new ArrayList<>();
+
+        map = new int[n][n];
+        temp = new int[n][n];
+
+        result = INF;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int x = sc.nextInt();
+                if (x == 2) chickenList.add(new Position(i + 1, j + 1));
+                if (x == 1) houseList.add(new Position(i + 1, j + 1));
+                map[i][j] = x;
+            }
+        }
+
+        _12_7_dfs(chickenList, houseList);
+
+        System.out.println(result);
+
+    }
+
+    static void _12_7_dfs(ArrayList<Position> chickenList, ArrayList<Position> houseList) {
+
+        if (chickenList.size() == m) {
+            int sum = 0;
+
+            for (int i = 0; i < houseList.size(); i++) {
+                int houseX = houseList.get(i).getX();
+                int houseY = houseList.get(i).getY();
+
+                int min = INF;
+
+                for (int j = 0; j < chickenList.size(); j++) {
+                    int chickenX = chickenList.get(j).getX();
+                    int chickenY = chickenList.get(j).getY();
+                    int gap = Math.abs(houseX - chickenX) + Math.abs(houseY - chickenY);
+                    min = Math.min(min, gap);
+                }
+                sum += min;
+            }
+            result = Math.min(result, sum);
+
+            return;
+        }
+
+        for (int i = 0; i < chickenList.size(); i++) {
+            Position chickenPos = chickenList.get(i);
+            chickenList.remove(chickenPos);
+            _12_7_dfs(chickenList, houseList);
+            chickenList.add(chickenPos);
+        }
+    }
+
+    static void _12_8() {
+
     }
 }
 
@@ -312,5 +501,46 @@ class SnakeInfo {
     public SnakeInfo(int time, String direction) {
         this.time = time;
         this.direction = direction;
+    }
+}
+
+class BuildFrame {
+
+    int x;
+    int y;
+    int buildType;
+    int isRemove;
+
+    public BuildFrame(int x, int y, int buildType, int isRemove) {
+        this.x = x;
+        this.y = y;
+        this.buildType = buildType;
+        this.isRemove = isRemove;
+    }
+}
+
+class BuildItem2 implements Comparable<BuildItem2> {
+
+    int x;
+    int y;
+    int buildType;
+
+    public BuildItem2(int x, int y, int buildType) {
+        this.x = x;
+        this.y = y;
+        this.buildType = buildType;
+    }
+
+    @Override
+    public int compareTo(BuildItem2 other) {
+        if (this.x == other.x) {
+            return this.y - other.y;
+        }
+        return this.x - other.x;
+    }
+
+    @Override
+    public String toString() {
+        return "[" + this.x + "," + this.y + "," + this.buildType + "]";
     }
 }
