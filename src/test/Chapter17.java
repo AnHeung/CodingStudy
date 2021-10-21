@@ -14,7 +14,7 @@ public class Chapter17 {
     static int[] dy = {1, 0, -1, 0};
 
     public static void main(String[] args) {
-        _17_4();
+        _17_3();
     }
 
     static void _17_1() {

@@ -1,5 +1,6 @@
 package test;
 
+import javax.swing.text.html.StyleSheet;
 import java.util.*;
 
 public class Chapter16Re {
@@ -18,7 +19,7 @@ public class Chapter16Re {
     static int[] dy = {1, 1, 1};
 
     public static void main(String[] args) {
-        _16_5_sol();
+        _16_6();
     }
 
     static void _16_1() {
@@ -312,29 +313,27 @@ public class Chapter16Re {
         int currentValue = 1;
 
         d[1] = 1;
-        arr =  new int[1001];
+        arr = new int[1001];
         arr[0] = 1;
 
-        while(currentValue <= n){
+        while (currentValue <= n) {
 
-            if(idx%2 == 0){
-                if(d[idx/2] == 0){
+            if (idx % 2 == 0) {
+                if (d[idx / 2] == 0) {
                     idx++;
                     continue;
                 }
                 d[idx]++;
                 arr[currentValue++] = idx;
-            } else if(idx %3 == 0){
-                if(d[idx/3] == 0){
+            } else if (idx % 3 == 0) {
+                if (d[idx / 3] == 0) {
                     idx++;
                     continue;
                 }
                 d[idx]++;
                 arr[currentValue++] = idx;
-            }
-
-            else if(idx %5 == 0){
-                if(d[idx/5] == 0){
+            } else if (idx % 5 == 0) {
+                if (d[idx / 5] == 0) {
                     idx++;
                     continue;
                 }
@@ -344,40 +343,107 @@ public class Chapter16Re {
             idx++;
         }
 
-        System.out.println(arr[n-1]);
+        System.out.println(arr[n - 1]);
     }
 
-    static void _16_5_sol(){
+    static void _16_5_sol() {
 
         n = sc.nextInt();
-        int i2 = 0, i3 = 0 , i5 = 0;
-        int next2 = 2 , next3 = 3 , next5 = 5;
+        int i2 = 0, i3 = 0, i5 = 0;
+        int next2 = 2, next3 = 3, next5 = 5;
 
         d = new int[1001];
         d[0] = 1;
 
-        for(int i = 1 ; i < n; i++){
+        for (int i = 1; i < n; i++) {
 
             d[i] = Math.min(next2, Math.min(next3, next5));
 
-            if(d[i] == next2){
+            if (d[i] == next2) {
                 i2++;
-                next2 = d[i2]*2;
+                next2 = d[i2] * 2;
             }
 
-            if(d[i] == next3){
+            if (d[i] == next3) {
                 i3++;
-                next3 = d[i3]*3;
+                next3 = d[i3] * 3;
             }
 
-            if(d[i] == next5){
+            if (d[i] == next5) {
                 i5++;
-                next5 = d[i5]*5;
+                next5 = d[i5] * 5;
             }
         }
 
-        System.out.println(d[n-1]);
+        System.out.println(d[n - 1]);
     }
+
+    static void _16_6() {
+
+        String a = sc.next();
+        String b = sc.next();
+
+
+        char[] strArr1 = a.toCharArray();
+        char[] strArr2 = b.toCharArray();
+
+        int cnt = 0;
+
+
+        for (int i = 0; i < strArr1.length; i++) {
+            for (int j = i; j < strArr2.length; j++) {
+
+                if (strArr1.length < strArr2.length) {
+                    //삭제
+                    if (strArr1[i] != strArr2[j]) {
+                        for (int k = 0; k < strArr2.length - 1; k++) {
+                            if (k >= j) {
+                                char temp = strArr2[k];
+                                strArr2[k] = strArr2[k + 1];
+                                strArr2[k + 1] = temp;
+                            }
+                        }
+                        strArr2 = Arrays.copyOf(strArr2, strArr2.length - 1);
+                        j = 0;
+                        cnt++;
+                    } else {
+                        break;
+                    }
+                } else if (strArr1.length > strArr2.length) { //삽입
+                    if (strArr1[i] != strArr2[j]) {
+
+                        char[] newCharArr = new char[strArr2.length + 1];
+
+                        for (int k = 0; k < newCharArr.length; k++) {
+                            if (k < j) {
+                                newCharArr[k] = strArr2[k];
+                            } else if (k == j) {
+                                newCharArr[k] = strArr1[i];
+                            } else {
+                                newCharArr[k] = strArr2[k - 1];
+                            }
+                        }
+                        strArr2 = Arrays.copyOf(newCharArr, strArr2.length + 1);
+                        if (strArr2.length == strArr1.length) j = i - 1;
+                        else j = 0;
+                        cnt++;
+                    } else {
+                        break;
+                    }
+                } else {
+                    //교환
+                    if (strArr1[i] != strArr2[j]) {
+                        strArr2[j] = strArr1[i];
+                        i = 0;
+                        cnt++;
+                    }
+                    break;
+                }
+            }
+        }
+        System.out.println(cnt);
+    }
+
 }
 
 class MineInfo {
