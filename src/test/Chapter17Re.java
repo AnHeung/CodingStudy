@@ -17,7 +17,7 @@ public class Chapter17Re {
     static int[] dy = {1, 0, -1, 0};
 
     public static void main(String[] args) {
-        _17_3();
+        _17_4();
     }
 
     static void _17_1() {
@@ -124,12 +124,13 @@ public class Chapter17Re {
                 Arrays.fill(temp[i], INF);
             }
 
-            _17_3_dfs(0, 0 , map[0][0]);
+            _17_3_dfs(0, 0, map[0][0]);
             System.out.println(result);
 //            System.out.println(temp[n-1][n-1]);
         }
     }
-    static void _17_3_bfs(){
+
+    static void _17_3_bfs() {
 
         int x = 0, y = 0, sum = 0;
         Queue<SpacePosition> q = new LinkedList<>();
@@ -156,9 +157,10 @@ public class Chapter17Re {
             }
         }
     }
-    static void _17_3_dfs(int x , int y , int sum ){
 
-        if(x == n-1 && y == n-1){
+    static void _17_3_dfs(int x, int y, int sum) {
+
+        if (x == n - 1 && y == n - 1) {
             result = Math.min(result, sum);
             return;
         }
@@ -168,15 +170,15 @@ public class Chapter17Re {
             int ny = y + dy[i];
 
             if (0 <= nx && nx < n && 0 <= ny && ny < n) {
-                if(temp[nx][ny] > map[nx][ny] + sum){
+                if (temp[nx][ny] > map[nx][ny] + sum) {
                     temp[nx][ny] = map[nx][ny] + sum;
-                    _17_3_dfs(nx,ny, temp[nx][ny]);
+                    _17_3_dfs(nx, ny, temp[nx][ny]);
                 }
             }
         }
     }
 
-    static void _17_3_upgradeDijkstra(){
+    static void _17_3_upgradeDijkstra() {
         int x = 0, y = 0, sum = 0;
         PriorityQueue<SpacePosition> q = new PriorityQueue<>();
         q.offer(new SpacePosition(x, y, map[x][y]));
@@ -194,7 +196,7 @@ public class Chapter17Re {
                 int nx = x + dx[i];
                 int ny = y + dy[i];
 
-                if(temp[x][y] < sum)continue;
+                if (temp[x][y] < sum) continue;
 
 
                 if (0 <= nx && nx < n && 0 <= ny && ny < n) {
@@ -206,9 +208,68 @@ public class Chapter17Re {
             }
         }
     }
+
+    static void _17_4() {
+        n = sc.nextInt();
+
+        m = sc.nextInt();
+        d = new int[n];
+        map = new int[n][n];
+        ArrayList<ArrayList<Integer>> list = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            list.add(new ArrayList<>());
+        }
+
+        for (int i = 0; i < m; i++) {
+            int a = sc.nextInt();
+            int b = sc.nextInt();
+            list.get(a - 1).add(b - 1);
+            list.get(b - 1).add(a - 1);
+        }
+
+        Arrays.fill(d, INF);
+
+        d[0] = 0;
+
+        PriorityQueue<Node> pq = new PriorityQueue<Node>();
+        pq.offer(new Node( 0 , 0));
+
+        while (!pq.isEmpty()) {
+
+            Node node = pq.poll();
+            int now  = node.getIndex();
+            int dist  = node.getDistance();
+            if(dist  > d[now]) continue;
+
+            for (int i = 0; i < list.get(now).size(); i++) {
+
+                int cost = 1 + d[now];
+                if (cost < d[list.get(now).get(i)]) {
+                    d[list.get(now).get(i)] = cost;
+                    pq.offer(new Node(list.get(now).get(i), cost));
+                }
+            }
+        }
+
+        Arrays.sort(d);
+        int first = 0;
+        int dist = 0;
+        int same = 1;
+
+        for (int i = 1; i < n; i++) {
+            if (d[i] > first) {
+                first = i;
+                dist = d[i];
+                same = 1;
+            } else if (d[i] == dist) same++;
+        }
+
+        System.out.println(first+1  +" " + dist + " " + same );
+    }
 }
 
-class SpacePosition implements  Comparable<SpacePosition>{
+class SpacePosition implements Comparable<SpacePosition> {
 
     int x;
     int y;

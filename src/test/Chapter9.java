@@ -320,7 +320,6 @@ class Node implements Comparable<Node> {
 
     @Override
     public int compareTo(Node other) {
-        if (this.distance < other.distance) return -1;
-        return 1;
+        return this.distance-  other.distance;
     }
 }
